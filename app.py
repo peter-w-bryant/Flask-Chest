@@ -4,7 +4,7 @@ from flask_chest import FlaskChest
 from flask_chest.decorator import flask_chest
 
 app = Flask(__name__)
-app.config['db_uri'] = 'path_to_your_database.sqlite'  # Updated configuration key
+app.config['db_uri'] = 'db.sqlite'  # Updated configuration key
 chest = FlaskChest(app, app.config['db_uri'])      # Using the updated configuration key
 
 # Define the schema for the database
