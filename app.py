@@ -35,7 +35,7 @@ db_schema = {
         'variable_name': 'variable_name',
         'variable_value': 'variable_value'
     },
-    'custom_request_id': custom_request_id_generator  # Function to generate custom request ID
+    # 'custom_request_id': custom_request_id_generator  # Function to generate custom request ID
 }
 
 # Define tracked metrics
