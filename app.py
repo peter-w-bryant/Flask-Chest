@@ -13,14 +13,9 @@ app = Flask(__name__)
 chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")
 exporter = FlaskChestExporter(app=app)
 
-chest.mount_exporter(exporter=exporter)
-
-
-def custom_request_id_generator():
-    return str(uuid.uuid4())
-
 # With default schema
-chest.register_table(default_schema=True, table_name="metrics")                                   )
+chest.register_table(default_schema=True, table_name="metrics")
+chest.mount_exporter(exporter=exporter)
 
 # Define tracked metrics
 route_tracked_vars = {
@@ -28,6 +23,11 @@ route_tracked_vars = {
     "GET": ["user_id", "session_id", "total_time"],
     "POST": ["user_id", "data"],
 }
+
+
+def custom_request_id_generator():
+    return str(uuid.uuid4())
+
 
 @app.route("/", methods=["GET", "POST"])
 @flask_chest(
