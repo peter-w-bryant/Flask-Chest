@@ -1,4 +1,5 @@
 import datetime
+import json
 import sqlite3
 import traceback
 
@@ -6,65 +7,77 @@ from flask import Flask
 
 from .sqlite_utils import create_sqlite_table, sqlite_write
 
+SQLITE_DEFAULT_SCHEMA = {
+    "name": "sqlite_default",
+    "fields": {
+        "variable_name": "TEXT",
+        "variable_value": "TEXT",
+    },
+}
+
 
 class FlaskChest:
-    def __init__(self, app: Flask, type: str = "sqlite"):
-        self.type = type    # Database type
-        self.db_uri = None  # Database URI
-        self.schemas = {}   # Database schemas
+    def __init__(self, app: Flask):
+        self.app = app  # Flask app
 
         # Register extension with app
         if not hasattr(app, "extensions"):
             app.extensions = {}
         app.extensions["flask_chest"] = self
 
+
+class FlaskChestSQLite(FlaskChest):
+    def __init__(self, app: Flask, db_uri: str = "db.sqlite3"):
+        super().__init__(app)
+        self.db_uri = None  # Database URI
+        self.tables = {}  # Database tables
+
         # Get database URI from app config
-        self.db_uri = app.config.get("FLASKCHEST_DATABASE_URI", None)
+        self.db_uri = db_uri
 
-        # Check if database URI is set
-        if self.db_uri is None:
-            raise ValueError("FLASKCHEST_DATABASE_URI is not set")
+    def __str__(self):
+        return json.dumps(self.to_dict(), indent=4)
 
-    def register_schema(self, schema_map):
-        """
-        The function `register_schema` creates storage location registers a schema map in the `schemas` dictionary if the
-        database type is SQLite.
+    def to_dict(self):
+        return {
+            "db_uri": self.db_uri,
+            "tables": self.tables,
+        }
 
-        :param schema_map: The `schema_map` parameter is a dictionary that contains information about
-        the schema to be registered. It typically includes the following keys:
-        """
+    def register_table(self, schema=None, default_schema=True, table_name=None):
         try:
-            if schema_map["type"] == "sqlite" and self.type == "sqlite":
-                # Create SQLite table from given schema
-                create_sqlite_table(self.db_uri, schema_map)
-                # Add schema to schemas dictionary
-                self.schemas[schema_map["name"]] = schema_map
+            # Configure default schema if selected
+            if default_schema:
+                schema = SQLITE_DEFAULT_SCHEMA
+                # If table_name is specified, override default table name
+                if table_name is not None:
+                    schema["name"] = table_name
+
+            # Create SQLite table from given schema, table_exists if table is created or already exists
+            table_exists = create_sqlite_table(self.db_uri, schema)
+
+            if not table_exists:
+                raise Exception("Unable to register table!")
+
+            # Add schema to schemas dictionary
+            self.tables[schema["name"]] = schema
 
         except Exception:
             print(traceback.print_exc())
+            raise Exception("Error occurred when registering table!")
 
-    def generic_db_write(
-        self, schema_name, variable_name, variable_value, request_id=None
-    ):
-        """
-        The function `generic_db_write` writes a variable value to a database, using the specified
-        schema and variable name, and optionally associates it with a request ID.
-
-        :param schema_name: The schema_name parameter refers to the name of the database schema or table
-        where the data will be written
-        :param variable_name: The variable_name parameter is the name of the variable that you want to
-        write to the database
-        :param variable_value: The `variable_value` parameter is the value that you want to write to the
-        database. It can be any data type such as a string, integer, float, boolean, or even a complex
-        data structure like a list or dictionary
-        :param request_id: The `request_id` parameter is an optional parameter that represents the
-        unique identifier for a specific request. It can be used to track and identify a specific
-        request in the database
-        """
+    def write(self, schema_name, variable_name, variable_value, request_id=None):
         try:
-            if self.type == "sqlite":
-                sqlite_write(
-                    self.db_uri, schema_name, variable_name, variable_value, request_id
-                )
+            successful_write = sqlite_write(
+                self.db_uri,
+                self.tables[schema_name],
+                variable_name,
+                variable_value,
+                request_id,
+            )
+            
+            if not successful_write:
+                raise Exception("Unable to write to database!")
+
         except Exception:
             print(traceback.print_exc())
