@@ -7,15 +7,20 @@ from flask import Flask, g
 
 from flask_chest import FlaskChestSQLite
 from flask_chest.decorator import flask_chest
+from flask_chest.exporter import FlaskChestExporter
 
 app = Flask(__name__)
 chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")
+exporter = FlaskChestExporter(app=app)
+
+chest.mount_exporter(exporter=exporter)
+
 
 def custom_request_id_generator():
     return str(uuid.uuid4())
 
 # With default schema
-chest.register_table(default_schema=True, table_name="metrics")
+chest.register_table(default_schema=True, table_name="metrics")                                   )
 
 # Define tracked metrics
 route_tracked_vars = {

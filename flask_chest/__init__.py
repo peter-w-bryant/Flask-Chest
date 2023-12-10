@@ -10,8 +10,8 @@ from .sqlite_utils import create_sqlite_table, sqlite_write
 SQLITE_DEFAULT_SCHEMA = {
     "name": "sqlite_default",
     "fields": {
-        "variable_name": "TEXT",
-        "variable_value": "TEXT",
+        "name": "TEXT",
+        "value": "TEXT",
     },
 }
 
@@ -29,11 +29,8 @@ class FlaskChest:
 class FlaskChestSQLite(FlaskChest):
     def __init__(self, app: Flask, db_uri: str = "db.sqlite3"):
         super().__init__(app)
-        self.db_uri = None  # Database URI
+        self.db_uri = db_uri  # Database URI
         self.tables = {}  # Database tables
-
-        # Get database URI from app config
-        self.db_uri = db_uri
 
     def __str__(self):
         return json.dumps(self.to_dict(), indent=4)
@@ -75,7 +72,7 @@ class FlaskChestSQLite(FlaskChest):
                 variable_value,
                 request_id,
             )
-            
+
             if not successful_write:
                 raise Exception("Unable to write to database!")
 
