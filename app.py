@@ -14,7 +14,6 @@ app = Flask(__name__)
 
 # Interface for FlaskChest with SQLite
 chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")
-chest.register_table(default_schema=True, table_name="metrics")
 
 # exporter = FlaskChestExporter(app=app)
 # chest.mount_exporter(exporter=exporter)

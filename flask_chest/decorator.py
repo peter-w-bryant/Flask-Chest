@@ -33,7 +33,7 @@ def flask_chest(
         def wrapper(*args, **kwargs) -> Callable:
             set_custom_request_id(request_id_generator)
             response = func(*args, **kwargs)
-            write_tracked_variables(table_name, tracked_vars)
+            write_tracked_variables(tracked_vars)
             return response
 
         return wrapper
@@ -61,7 +61,7 @@ def set_custom_request_id(request_id_generator: Optional[Callable[[], str]]):
         g.custom_request_id = g.custom_request_id[:255]
 
 
-def write_tracked_variables(table_name: str, tracked_vars: List[str]) -> None:
+def write_tracked_variables(tracked_vars: List[str]) -> None:
     """
     The function writes tracked variables to a database using Flask-Chest extension.
 
@@ -84,6 +84,6 @@ def write_tracked_variables(table_name: str, tracked_vars: List[str]) -> None:
                         value = getattr(g, var)
                         # If Flask-Chest extension is SQLite, pass table name
                         if isinstance(flask_chest, FlaskChestSQLite):
-                            flask_chest.write(table_name, var, value, request_id)
+                            flask_chest.write(var, value, request_id)
     else:
         raise Exception("Flask-Chest extension not found!")
