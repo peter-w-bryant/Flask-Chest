@@ -18,11 +18,12 @@ SQLITE_DEFAULT_SCHEMA = {
 
 class FlaskChest:
     def __init__(self, app: Flask):
-        self.app = app  # Flask app
+        self.app = app
 
         # Register extension with app
         if not hasattr(app, "extensions"):
             app.extensions = {}
+
         app.extensions["flask_chest"] = self
 
 
@@ -63,9 +64,15 @@ class FlaskChestSQLite(FlaskChest):
             print(traceback.print_exc())
             raise Exception("Error occurred when registering table!")
 
-    def write(self, schema_name, variable_name, variable_value, request_id=None):
+    def write(
+        self,
+        schema_name: str,
+        variable_name: str,
+        variable_value: str,
+        request_id: str = None,
+    ) -> None:
         try:
-            successful_write = sqlite_write(
+            successful_write: bool = sqlite_write(
                 self.db_uri,
                 self.tables[schema_name],
                 variable_name,
