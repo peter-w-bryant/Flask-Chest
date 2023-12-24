@@ -32,7 +32,6 @@ def custom_request_id_generator():
 
 @app.route("/", methods=["GET", "POST"])
 @flask_chest(
-    table_name="metrics",
     tracked_vars=route_tracked_vars,
     request_id_generator=custom_request_id_generator,
 )

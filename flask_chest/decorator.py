@@ -10,7 +10,6 @@ from flask_chest import FlaskChestSQLite
 
 
 def flask_chest(
-    table_name: str,
     tracked_vars: List[str],
     request_id_generator: Optional[Callable[[], str]] = None,
 ) -> Callable[..., Callable]:
