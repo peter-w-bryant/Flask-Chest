@@ -1,0 +1,16 @@
+version: '3'
+services:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=mydb   # Replace with your database name
+      - INFLUXDB_USER=myuser # Replace with your database user
+      - INFLUXDB_USER_PASSWORD=myuserpassword # Replace with your database user password
+    volumes:
+      - influxdb-data:/var/lib/influxdb
+
+volumes:
+  influxdb-data:
