@@ -8,12 +8,11 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 from .base import FlaskChestExporter
 
 
-# The class FlaskChestExporterInfluxDB is a subclass of FlaskChestExporter and is used for exporting
-# data to InfluxDB.
 class FlaskChestExporterInfluxDB(FlaskChestExporter):
     def __init__(
         self,
         chest,
+        https=False,
         host="localhost",
         port=8086,
         token="",
@@ -21,9 +20,26 @@ class FlaskChestExporterInfluxDB(FlaskChestExporter):
         bucket="my-bucket",
         interval_minutes=5,
     ):
+        """
+        Initializes a FlaskChestExporterInfluxDB instance.
+
+        Parameters:
+        - chest: The FlaskChest instance.
+        - https: Whether to use HTTPS for the InfluxDB connection (default: False).
+        - host: The InfluxDB host (default: "localhost").
+        - port: The InfluxDB port (default: 8086).
+        - token: The InfluxDB authentication token (default: "").
+        - org: The InfluxDB organization (default: "my-org").
+        - bucket: The InfluxDB bucket (default: "my-bucket").
+        - interval_minutes: The interval in minutes for exporting data (default: 5).
+
+        Returns:
+        None
+        """
         super().__init__(chest, interval_minutes=interval_minutes)
+        http_scheme = "https" if https else "http"
         self.client = InfluxDBClient(
-            url=f"http://{host}:{port}",
+            url=f"{http_scheme}://{host}:{port}",
             token=token,
             org=org,
             debug=False,
@@ -36,30 +52,41 @@ class FlaskChestExporterInfluxDB(FlaskChestExporter):
     def export_data(self):
         """
         The function "export_data" is used to export data from flask_chest table to InfluxDB.
+
+        Returns:
+        None
         """
         data = self.fetch_data_from_flask_chest()
         self.write_to_influxdb(data)
 
     def write_to_influxdb(self, data):
         """
-        The function "write_to_influxdb" is used to write data to an InfluxDB database.
+        Write data to InfluxDB.
 
-        :param data: The "data" parameter is the data that you want to write to InfluxDB. It can be in any
-        format that InfluxDB supports, such as JSON or line protocol
+        Parameters:
+        - data: The data to be written to InfluxDB.
+
+        Returns:
+        None
         """
         try:
             write_api = self.client.write_api(write_options=SYNCHRONOUS)
             write_api.write(bucket=self.bucket, org=self.org, record=data)
             logging.info("Data successfully written to InfluxDB")
-            print("Data successfully written to InfluxDB")
 
         except Exception as e:
             logging.error(f"Error writing data to InfluxDB: {e}")
-            print("Error writing data to InfluxDB")
 
     def fetch_data_from_flask_chest(self):
         """
-        The function fetches data from a Flask server related to the chest.
+        Fetches data from the flask_chest table in the SQLite database and prepares it for InfluxDB.
+
+        Returns:
+            list: A list of data points formatted for InfluxDB.
+
+        Raises:
+            sqlite3.Error: If there is an error with the SQLite database.
+            Exception: If there is an exception during the query execution.
         """
         conn = sqlite3.connect(self.chest.db_uri)
         cursor = conn.cursor()

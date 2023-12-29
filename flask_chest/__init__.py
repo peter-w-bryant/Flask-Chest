@@ -15,6 +15,17 @@ DEFAULT_SCHEMA = {
 
 
 class FlaskChest:
+    """
+    Flask extension for storing and retrieving key-value pairs in a SQLite database.
+
+    Args:
+        app (Flask): The Flask application instance.
+
+    Attributes:
+        app (Flask): The Flask application instance.
+
+    """
+
     def __init__(self, app: Flask):
         self.app = app
 
@@ -26,6 +37,20 @@ class FlaskChest:
 
 
 class FlaskChestSQLite(FlaskChest):
+    """
+    Flask extension for storing and retrieving key-value pairs in a SQLite database.
+
+    Args:
+        app (Flask): The Flask application instance.
+        name (str, optional): The name of the SQLite table. Defaults to "flask_chest".
+        db_uri (str, optional): The URI of the SQLite database. Defaults to "db.sqlite3".
+
+    Attributes:
+        app (Flask): The Flask application instance.
+        db_uri (str): The URI of the SQLite database.
+
+    """
+
     def __init__(
         self, app: Flask, name: str = "flask_chest", db_uri: str = "db.sqlite3"
     ):
@@ -37,9 +62,26 @@ class FlaskChestSQLite(FlaskChest):
         return json.dumps(self.to_dict(), indent=4)
 
     def to_dict(self):
+        """
+        Convert the FlaskChestSQLite instance to a dictionary.
+
+        Returns:
+            dict: A dictionary representation of the FlaskChestSQLite instance.
+
+        """
         return {"db_uri": self.db_uri}
 
     def register_table(self, table_name: str = None) -> None:
+        """
+        Register the SQLite table.
+
+        Args:
+            table_name (str, optional): The name of the SQLite table. If not provided, the default table name "flask_chest" will be used.
+
+        Raises:
+            Exception: If an error occurs when registering the table.
+
+        """
         try:
             if table_name is not None:
                 DEFAULT_SCHEMA["name"] = table_name
@@ -59,6 +101,18 @@ class FlaskChestSQLite(FlaskChest):
         variable_value: str,
         request_id: str = None,
     ) -> None:
+        """
+        Write a key-value pair to the SQLite database.
+
+        Args:
+            variable_name (str): The name of the variable.
+            variable_value (str): The value of the variable.
+            request_id (str, optional): The ID of the request. Defaults to None.
+
+        Raises:
+            Exception: If an error occurs when writing to the database.
+
+        """
         try:
             successful_write: bool = sqlite_write(
                 self.db_uri,
