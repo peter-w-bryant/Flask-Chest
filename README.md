@@ -10,14 +10,17 @@
 
 ## Introduction
 
-Flask-Chest is a versatile Python package designed for Flask applications. It provides a decorator for Flask routes to track and record specific global variables (`g.variables`) for each request. The package supports dynamic tracking and stores metrics in a SQLite database, making it an ideal tool for monitoring and analytics in Flask web applications.
+Flask-Chest is a versatile Python package designed for Flask applications. It provides a decorator for Flask routes to track and record user-determined global context variables (`g.variables`) for each request. 
+
+The package supports the dynamic tracking and storing of context variables in your configured `FlaskChest` object, an abstraction for your database; it also provides numerous exporters that will write your data to your database of choice, making it an ideal tool for simple monitoring and analytics in Flask web applications.
 
 ## Features
 
 - Easy integration with Flask applications.
 - Customizable tracking of `g.variables` based on request methods.
-- Automatic or custom-defined request IDs for unique tracking.
-- Efficient storage of metrics in a SQLite database with a user-defined schema.
+- Automatic or custom-defined request IDs for unique tracking of context variables initialized during the same request.
+- Support for multiple database types (SQLite, MySQL, PostgreSQL, MongoDB, etc.).
+- Exporters for writing data to your database of choice.
 
 ## How to Install
 
@@ -32,61 +35,58 @@ Apply the @flask_chest decorator to your routes.
 Example:
 
 ```python
-# app.py
-
+import os
 import time
 import uuid
-from datetime import datetime
 
-from flask import Flask, g
+from dotenv import load_dotenv
+from flask import Flask, g, request
 
-from flask_chest import FlaskChest
+# From flask-chest package
+from flask_chest import FlaskChestSQLite
 from flask_chest.decorator import flask_chest
+from flask_chest.exporter import FlaskChestExporterInfluxDB
 
+load_dotenv()
 app = Flask(__name__)
-app.config['db_uri'] = 'db.sqlite3'
-chest = FlaskChest(app, app.config['db_uri'])
+chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")  # Instantiate the chest
 
-# Function to compute a unique request ID (e.g., current epoch time)
-# def custom_request_id_generator():
-#     return str(int(time.time()))
+# Instantiate the Influx exporter and set it to run every 1 minute
+influx_exporter = FlaskChestExporterInfluxDB(
+    chest=chest,
+    token=os.getenv("INFLUXDB_TOKEN"),
+    interval_minutes=1,
+)
 
-# def custom_request_id_generator():
-#     return str(uuid.uuid4())
+# Define tracked global context variables
+route_tracked_vars = {
+    "GET": ["user_id", "session_id", "total_time"],
+    "POST": ["user_id", "data"],
+}
+
 
 def custom_request_id_generator():
-    now = datetime.now()
-    return now.strftime("%Y%m%d%H%M%S%f")
+    return str(uuid.uuid4())
 
-# Define the schema for the database
-db_schema = {
-    'table_name': 'metrics',
-    'fields': {
-        'unique_id': 'unique_id',
-        'request_id': 'request_id',
-        'date': 'date',
-        'time': 'time',
-        'variable_name': 'variable_name',
-        'variable_value': 'variable_value'
-    },
-    # 'custom_request_id': custom_request_id_generator  # Function to generate custom request ID
-}
 
-# Define tracked metrics
-tracked_metrics = {
-    'GET': ['user_id', 'session_id'],
-    'POST': ['user_id', 'data']
-}
-
-@app.route('/', methods=['GET', 'POST'])
-@flask_chest(db_schema, tracked_metrics)
+@app.route("/", methods=["GET", "POST"])
+@flask_chest(
+    tracked_vars=route_tracked_vars,
+    request_id_generator=custom_request_id_generator,
+)
 def index():
-    g.user_id = '123'
-    g.session_id = 'abc'
+    if request.method == "GET":
+        g.start = time.time()
+        g.user_id = "123"
+        g.session_id = "abc"
+        time.sleep(0.1)  # Simulate a delay
+        g.total_time = time.time() - g.start
     return "Hello, World!"
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run()
+
 ```
 
 ## License
