@@ -12,7 +12,7 @@ from .base import FlaskChestExporter
 class FlaskChestExporterInfluxDB(FlaskChestExporter):
     def __init__(
         self,
-        app,
+        chest,
         host="localhost",
         port=8086,
         token="",
@@ -20,13 +20,14 @@ class FlaskChestExporterInfluxDB(FlaskChestExporter):
         bucket="my-bucket",
         interval_minutes=1,
     ):
-        super().__init__(app, interval_minutes=interval_minutes)
+        super().__init__(chest, interval_minutes=interval_minutes)
         self.client = InfluxDBClient(
             url=f"http://{host}:{port}",
             token=token,
             org=org,
             debug=False,
         )
+        self.chest = chest
         self.org = org
         self.bucket = bucket
         self.start_export_task()
@@ -40,12 +41,14 @@ class FlaskChestExporterInfluxDB(FlaskChestExporter):
             write_api = self.client.write_api(write_options=SYNCHRONOUS)
             write_api.write(bucket=self.bucket, org=self.org, record=data)
             logging.info("Data successfully written to InfluxDB")
+            print("Data successfully written to InfluxDB")
 
         except Exception as e:
             logging.error(f"Error writing data to InfluxDB: {e}")
+            print("Error writing data to InfluxDB")
 
     def fetch_data_from_flask_chest(self):
-        conn = sqlite3.connect("db.sqlite3")
+        conn = sqlite3.connect(self.chest.db_uri)
         cursor = conn.cursor()
         query = "SELECT unique_id, request_id, name, value FROM flask_chest"
 

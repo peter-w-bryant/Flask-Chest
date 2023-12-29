@@ -1,13 +1,15 @@
 from flask import Flask
 from flask_apscheduler import APScheduler
 
+from flask_chest import FlaskChest
+
 
 class FlaskChestExporter:
-    def __init__(self, app: Flask, interval_minutes: int = 5):
-        self.app = app
+    def __init__(self, chest: FlaskChest, interval_minutes: int = 5):
+        self.app = chest.app
         self.interval_minutes = interval_minutes
         self.scheduler = APScheduler()
-        self.scheduler.init_app(app)
+        self.scheduler.init_app(self.app)
         self.scheduler.start()
 
     def start_export_task(self):

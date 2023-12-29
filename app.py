@@ -18,7 +18,7 @@ chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")
 
 # Instantiate the Influx exporter and set it to run every 1 minute
 influx_exporter = FlaskChestExporterInfluxDB(
-    app=app,
+    chest=chest,
     token=influxdb_token,
     interval_minutes=1,  # Export data every 1 minute
 )
