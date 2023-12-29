@@ -5,25 +5,23 @@ import uuid
 from dotenv import load_dotenv
 from flask import Flask, g, request
 
+# From flask-chest package
 from flask_chest import FlaskChestSQLite
 from flask_chest.decorator import flask_chest
-from flask_chest.exporter import FlaskChestExporterInfluxDB  # Import the exporter class
+from flask_chest.exporter import FlaskChestExporterInfluxDB
 
-app = Flask(__name__)
 load_dotenv()
-influxdb_token = os.getenv("INFLUXDB_TOKEN")
-
-# Interface for FlaskChest with SQLite
-chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")
+app = Flask(__name__)
+chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")  # Instantiate the chest
 
 # Instantiate the Influx exporter and set it to run every 1 minute
 influx_exporter = FlaskChestExporterInfluxDB(
     chest=chest,
-    token=influxdb_token,
-    interval_minutes=1,  # Export data every 1 minute
+    token=os.getenv("INFLUXDB_TOKEN"),
+    interval_minutes=1,
 )
 
-# Define tracked metrics
+# Define tracked global context variables
 route_tracked_vars = {
     "GET": ["user_id", "session_id", "total_time"],
     "POST": ["user_id", "data"],
