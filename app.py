@@ -1,36 +1,34 @@
-# app.py
-
+import os
 import time
 import uuid
 
+from dotenv import load_dotenv
 from flask import Flask, g, request
 
 from flask_chest import FlaskChestSQLite
 from flask_chest.decorator import flask_chest
-
-# from flask_chest.exporter import FlaskChestExporterInfluxDB
+from flask_chest.exporter import FlaskChestExporterInfluxDB  # Import the exporter class
 
 app = Flask(__name__)
 
 # Interface for FlaskChest with SQLite
 chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")
 
-# influx_exporter = FlaskChestExporterInfluxDB(
-#     app,
-#     host="localhost",
-#     port=8086,
-#     username="my-user",
-#     password="my-password",
-#     dbname="influxdb-2.x",
-# )
+# Load environment variables from .env file
+load_dotenv()
 
-# influx_exporter.setup_periodic_task()
+# Get the INFLUXDB_TOKEN from the environment
+influxdb_token = os.getenv("INFLUXDB_TOKEN")
 
-# chest.mount_exporter(exporter=exporter)
+# Instantiate the Influx exporter and set it to run every 1 minute
+influx_exporter = FlaskChestExporterInfluxDB(
+    app=app,
+    token=influxdb_token,
+    interval_minutes=1,  # Set the interval to 1 minute
+)
 
 # Define tracked metrics
 route_tracked_vars = {
-    # 'REQUEST_METHOD': ['VARIABLE_NAME']
     "GET": ["user_id", "session_id", "total_time"],
     "POST": ["user_id", "data"],
 }
@@ -50,7 +48,7 @@ def index():
         g.start = time.time()
         g.user_id = "123"
         g.session_id = "abc"
-        time.sleep(0.1)
+        time.sleep(0.1)  # Simulate a delay
         g.total_time = time.time() - g.start
     return "Hello, World!"
 

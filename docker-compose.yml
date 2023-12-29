@@ -1,16 +1,17 @@
-version: '3'
+version: '3.8'
 services:
   influxdb:
-    image: influxdb:latest
-    container_name: influxdb
+    image: influxdb:2.0
     ports:
       - "8086:8086"
     environment:
-      - INFLUXDB_DB=mydb   # Replace with your database name
-      - INFLUXDB_USER=myuser # Replace with your database user
-      - INFLUXDB_USER_PASSWORD=myuserpassword # Replace with your database user password
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=my-user
+      - DOCKER_INFLUXDB_INIT_PASSWORD=my-password
+      - DOCKER_INFLUXDB_INIT_ORG=my-org
+      - DOCKER_INFLUXDB_INIT_BUCKET=my-bucket
     volumes:
-      - influxdb-data:/var/lib/influxdb
+      - influxdb_data:/var/lib/influxdb2
 
 volumes:
-  influxdb-data:
+  influxdb_data:
