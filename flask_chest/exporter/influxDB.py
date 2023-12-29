@@ -67,6 +67,10 @@ class FlaskChestExporterInfluxDB(FlaskChestExporter):
                     "time": int(time.time() * 1e9),
                 }
                 influxdb_data.append(data_point)
+
+            # Remove rows from flask_chest table
+            cursor.execute("DELETE FROM flask_chest")
+            conn.commit()
             return influxdb_data
         except sqlite3.Error as e:
             print(f"Database error: {e}")

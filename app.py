@@ -10,21 +10,17 @@ from flask_chest.decorator import flask_chest
 from flask_chest.exporter import FlaskChestExporterInfluxDB  # Import the exporter class
 
 app = Flask(__name__)
+load_dotenv()
+influxdb_token = os.getenv("INFLUXDB_TOKEN")
 
 # Interface for FlaskChest with SQLite
 chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Get the INFLUXDB_TOKEN from the environment
-influxdb_token = os.getenv("INFLUXDB_TOKEN")
 
 # Instantiate the Influx exporter and set it to run every 1 minute
 influx_exporter = FlaskChestExporterInfluxDB(
     app=app,
     token=influxdb_token,
-    interval_minutes=1,  # Set the interval to 1 minute
+    interval_minutes=1,  # Export data every 1 minute
 )
 
 # Define tracked metrics
