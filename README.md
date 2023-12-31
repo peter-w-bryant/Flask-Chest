@@ -1,11 +1,19 @@
 # Flask-Chest
 
+<center>
+
 ![Flask-Chest Icon](/images/flask_chest_README.png)
+
+</center>
+
+<center>
 
 ![Language](https://img.shields.io/badge/language-Python-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![Framework](https://img.shields.io/badge/framework-Flask-orange.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
+
+</center>
 
 ## Introduction
 
