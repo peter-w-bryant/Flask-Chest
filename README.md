@@ -1,6 +1,6 @@
 # Flask-Chest
 
-![Flask-Chest Icon](flask_chest_README.png)
+![Flask-Chest Icon](images/flask_chest_README.png)
 
 ![Language](https://img.shields.io/badge/language-Python-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
