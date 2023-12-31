@@ -7,87 +7,102 @@
 ![Framework](https://img.shields.io/badge/framework-Flask-orange.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-
 ## Introduction
 
-Flask-Chest is a versatile Python package designed for Flask applications. It provides a decorator for Flask routes to track and record specific global variables (`g.variables`) for each request. The package supports dynamic tracking and stores metrics in a SQLite database, making it an ideal tool for monitoring and analytics in Flask web applications.
+Flask-Chest is a Python package for Flask applications, providing a decorator to track and record global context variables (`g.variables`) for each request. It interfaces with various databases to store and export these variables, serving as a tool for monitoring and analytics in Flask web applications.
 
 ## Features
 
-- Easy integration with Flask applications.
-- Customizable tracking of `g.variables` based on request methods.
-- Automatic or custom-defined request IDs for unique tracking.
-- Efficient storage of metrics in a SQLite database with a user-defined schema.
+- Tracks and records `g.variables` in Flask routes, allowing for the storage of contextual data in a configured database.
+- Offers customizable request ID generation, ensuring unique identification of each request for better traceability and analysis of contextual data.
+- Provides support for multiple databases, including SQLite, MySQL, PostgreSQL, and MongoDB, enabling flexibility in choosing the appropriate database for the application.
+- Implements thread-safe data exporters, scheduled using AP Scheduler, to reliably and periodically export the recorded data, facilitating monitoring and analytics.
 
-## How to Install
+## Installation
 
 ```bash
 pip install flask-chest
 ```
 
-## How to Use
-Import and initialize Flask-Chest in your Flask application.
-Define a schema and tracked metrics.
-Apply the @flask_chest decorator to your routes.
-Example:
+## Usage
+
+1. Import and initialize Flask-Chest in your Flask application.
+2. Import and initialize the desired exporter(s) for data export.
+3. Define the variables to be tracked in the `@flask_chest` decorator, along with the request ID generator.
+4. Apply the `@flask_chest` decorator to Flask routes.
+
+## List of Exporters
+- FlaskChestExporterInfluxDB: Exports data to an InfluxDB database.
+
+_Coming soon_:
+- FlaskChestExporterMongoDB: Exports data to a MongoDB database.
+- FlaskChestExporterMySQL: Exports data to a MySQL database.
+- FlaskChestExporterPostgreSQL: Exports data to a PostgreSQL database.
+
+### Example:
+This code snippet showcases a Flask application that leverages Flask-Chest, utilizing a local SQLite database for caching and an InfluxDB database for exporting. It demonstrates the implementation of tracked variables and a custom request ID generator.
 
 ```python
-# app.py
-
+import os
 import time
 import uuid
-from datetime import datetime
 
-from flask import Flask, g
+from dotenv import load_dotenv
+from flask import Flask, g, request
 
-from flask_chest import FlaskChest
+# From flask-chest package
+from flask_chest import FlaskChestSQLite
 from flask_chest.decorator import flask_chest
+from flask_chest.exporter import FlaskChestExporterInfluxDB
 
+load_dotenv()
 app = Flask(__name__)
-app.config['db_uri'] = 'db.sqlite3'
-chest = FlaskChest(app, app.config['db_uri'])
 
-# Function to compute a unique request ID (e.g., current epoch time)
-# def custom_request_id_generator():
-#     return str(int(time.time()))
+# Instantiate the chest
+chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")  
 
-# def custom_request_id_generator():
-#     return str(uuid.uuid4())
+# Instantiate the Influx exporter and set it to run every 1 minute
+influx_exporter = FlaskChestExporterInfluxDB(
+    chest=chest,
+    token=os.getenv("INFLUXDB_TOKEN"),
+    interval_minutes=1,
+)
+
+# Define tracked global context variables
+route_tracked_vars = {
+    "GET": ["user_id", "session_id", "total_time"],
+    "POST": ["user_id", "data"],
+}
+
 
 def custom_request_id_generator():
-    now = datetime.now()
-    return now.strftime("%Y%m%d%H%M%S%f")
+    return str(uuid.uuid4())
 
-# Define the schema for the database
-db_schema = {
-    'table_name': 'metrics',
-    'fields': {
-        'unique_id': 'unique_id',
-        'request_id': 'request_id',
-        'date': 'date',
-        'time': 'time',
-        'variable_name': 'variable_name',
-        'variable_value': 'variable_value'
-    },
-    # 'custom_request_id': custom_request_id_generator  # Function to generate custom request ID
-}
 
-# Define tracked metrics
-tracked_metrics = {
-    'GET': ['user_id', 'session_id'],
-    'POST': ['user_id', 'data']
-}
-
-@app.route('/', methods=['GET', 'POST'])
-@flask_chest(db_schema, tracked_metrics)
+@app.route("/", methods=["GET", "POST"])
+@flask_chest(
+    tracked_vars=route_tracked_vars,
+    request_id_generator=custom_request_id_generator,
+)
 def index():
-    g.user_id = '123'
-    g.session_id = 'abc'
+    if request.method == "GET":
+        g.start = time.time()
+        g.user_id = "123"
+        g.session_id = "abc"
+        time.sleep(0.1)  # Simulate a delay
+        g.total_time = time.time() - g.start
     return "Hello, World!"
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run()
+
 ```
 
 ## License
+
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+Please let me know if you would like any more adjustments or if this version is more in line with what you're looking for.
