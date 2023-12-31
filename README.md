@@ -102,8 +102,4 @@ if __name__ == "__main__":
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
-
-Please let me know if you would like any more adjustments or if this version is more in line with what you're looking for.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
