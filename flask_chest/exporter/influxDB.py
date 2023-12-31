@@ -1,11 +1,15 @@
 import logging
 import sqlite3
+import threading
 import time
 
 from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 from .base import FlaskChestExporter
+
+# Create a lock object
+lock = threading.Lock()
 
 
 class FlaskChestExporterInfluxDB(FlaskChestExporter):
@@ -93,6 +97,9 @@ class FlaskChestExporterInfluxDB(FlaskChestExporter):
         query = "SELECT unique_id, request_id, name, value FROM flask_chest"
 
         try:
+            # Acquire the lock before executing the query
+            lock.acquire()
+
             cursor.execute(query)
             rows = cursor.fetchall()
             influxdb_data = []
@@ -123,5 +130,7 @@ class FlaskChestExporterInfluxDB(FlaskChestExporter):
         except Exception as e:
             print(f"Exception in query: {e}")
         finally:
+            # Release the lock after executing the query
+            lock.release()
             cursor.close()
             conn.close()
