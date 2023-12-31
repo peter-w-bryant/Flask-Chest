@@ -28,8 +28,9 @@ pip install flask-chest
 
 1. Import and initialize Flask-Chest in your Flask application.
 2. Import and initialize the desired exporter(s) for data export.
-3. Define the variables to be tracked in the `@flask_chest` decorator, along with the request ID generator.
-4. Apply the `@flask_chest` decorator to Flask routes.
+3. Define the variables to be tracked in the `@flask_chest` decorator. The tracked variables map should be a dictionary where each HTTP method (e.g., "GET", "POST") is a key, and the value is a list of strings representing the names of the variables to track.
+4. Provide a request ID generator function that returns a unique string identifier for each request. If no custom generator is provided, a UUID4 string will be used by default.
+5. Apply the `@flask_chest` decorator to Flask routes.
 
 ## List of Exporters
 - FlaskChestExporterInfluxDB: Exports data to an InfluxDB database.
