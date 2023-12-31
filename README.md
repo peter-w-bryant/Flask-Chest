@@ -7,32 +7,40 @@
 ![Framework](https://img.shields.io/badge/framework-Flask-orange.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-
 ## Introduction
 
-Flask-Chest is a versatile Python package designed for Flask applications. It provides a decorator for Flask routes to track and record user-determined global context variables (`g.variables`) for each request. 
-
-The package supports the dynamic tracking and storing of context variables in your configured `FlaskChest` object, an abstraction for your database; it also provides numerous exporters that will write your data to your database of choice, making it an ideal tool for simple monitoring and analytics in Flask web applications.
+Flask-Chest is a Python package for Flask applications, providing a decorator to track and record global context variables (`g.variables`) for each request. It interfaces with various databases to store and export these variables, serving as a tool for monitoring and analytics in Flask web applications.
 
 ## Features
 
-- Easy integration with Flask applications.
-- Customizable tracking of `g.variables` based on request methods.
-- Automatic or custom-defined request IDs for unique tracking of context variables initialized during the same request.
-- Support for multiple database types (SQLite, MySQL, PostgreSQL, MongoDB, etc.).
-- Exporters for writing data to your database of choice.
+- Tracks and records `g.variables` in Flask routes, allowing for the storage of contextual data in a configured database.
+- Offers customizable request ID generation, ensuring unique identification of each request for better traceability and analysis of contextual data.
+- Provides support for multiple databases, including SQLite, MySQL, PostgreSQL, and MongoDB, enabling flexibility in choosing the appropriate database for the application.
+- Implements thread-safe data exporters, scheduled using AP Scheduler, to reliably and periodically export the recorded data, facilitating monitoring and analytics.
 
-## How to Install
+## Installation
 
 ```bash
 pip install flask-chest
 ```
 
-## How to Use
-Import and initialize Flask-Chest in your Flask application.
-Define a schema and tracked metrics.
-Apply the @flask_chest decorator to your routes.
-Example:
+## Usage
+
+1. Import and initialize Flask-Chest in your Flask application.
+2. Import and initialize the desired exporter(s) for data export.
+3. Define the variables to be tracked in the `@flask_chest` decorator, along with the request ID generator.
+4. Apply the `@flask_chest` decorator to Flask routes.
+
+## List of Exporters
+- FlaskChestExporterInfluxDB: Exports data to an InfluxDB database.
+
+_Coming soon_:
+- FlaskChestExporterMongoDB: Exports data to a MongoDB database.
+- FlaskChestExporterMySQL: Exports data to a MySQL database.
+- FlaskChestExporterPostgreSQL: Exports data to a PostgreSQL database.
+
+### Example:
+This code snippet showcases a Flask application that leverages Flask-Chest, utilizing a local SQLite database for caching and an InfluxDB database for exporting. It demonstrates the implementation of tracked variables and a custom request ID generator.
 
 ```python
 import os
@@ -49,7 +57,9 @@ from flask_chest.exporter import FlaskChestExporterInfluxDB
 
 load_dotenv()
 app = Flask(__name__)
-chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")  # Instantiate the chest
+
+# Instantiate the chest
+chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")  
 
 # Instantiate the Influx exporter and set it to run every 1 minute
 influx_exporter = FlaskChestExporterInfluxDB(
@@ -90,4 +100,9 @@ if __name__ == "__main__":
 ```
 
 ## License
+
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+Please let me know if you would like any more adjustments or if this version is more in line with what you're looking for.
