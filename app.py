@@ -29,7 +29,6 @@ chest_influxdb = FlaskChestInfluxDB(
 #     payload = {}    
 #     for i, context_tuple in enumerate(context_tuple_list):
 #         payload[i] = context_tuple
-    
 #     return payload
 
 # chest_signalfx = FlaskChestCustomWriter(
