@@ -38,18 +38,22 @@ class FlaskChestInfluxDB(FlaskChest):
         
     def write(
         self,
-        variable_name: str,
-        variable_value: str,
-        request_id: str = None,
+        context_tuple_list: list,
     ) -> None:
         try:
             
-            # Create a data point compatible with InfluxDB
-            data_point = create_influxdb_datapoint(
-                variable_name,
-                variable_value,
-                request_id
-            )
+            data_point_list = []
+            for context_tuple in context_tuple_list:
+                variable_name, variable_value, request_id = context_tuple
+            
+                # Create a data point compatible with InfluxDB
+                data_point = create_influxdb_datapoint(
+                    variable_name,
+                    variable_value,
+                    request_id
+                )
+                
+                data_point_list.append(data_point)
             
             # Create a client to connect to InfluxDB
             client = InfluxDBClient(
@@ -60,7 +64,7 @@ class FlaskChestInfluxDB(FlaskChest):
             )
             
             write_api = client.write_api(write_options=SYNCHRONOUS)
-            write_api.write(bucket=self.bucket, org=self.org, record=data_point)
+            write_api.write(bucket=self.bucket, org=self.org, record=data_point_list)
 
         except Exception:
             print(traceback.print_exc())

@@ -15,32 +15,33 @@ app = Flask(__name__)
 load_dotenv()
 
 # chest_sqlite = FlaskChestSQLite(app=app, db_uri="db1.sqlite3")  # Instantiate the chest
-# chest_influxdb = FlaskChestInfluxDB(
-#     app=app,
-#     https=False,
-#     host="localhost",
-#     port=8086,
-#     token=os.getenv("INFLUXDB_TOKEN"),
-#     org="my-org",
-#     bucket="my-bucket",
-# )
-
-def cust_payload_generator(variable_name, variable_value, request_id):
-    return {"variable_name": variable_name,
-            "variable_value": variable_value,
-            "request_id": request_id}
-
-chest_signalfx = FlaskChestCustomWriter(
+chest_influxdb = FlaskChestInfluxDB(
     app=app,
     https=False,
     host="localhost",
-    port="3000",
-    headers=None,
-    payload_generator=cust_payload_generator,
-    verify=False,
-    success_status_codes = [200],
-    debug=False,
+    port=8086,
+    token=os.getenv("INFLUXDB_TOKEN"),
+    org="my-org",
+    bucket="my-bucket",
 )
+
+# def cust_payload_generator(context_tuple_list):
+#     payload = {}    
+#     for i, context_tuple in enumerate(context_tuple_list):
+#         payload[i] = context_tuple
+#     return payload
+
+# chest_signalfx = FlaskChestCustomWriter(
+#     app=app,
+#     https=False,
+#     host="localhost",
+#     port="3000",
+#     headers=None,
+#     payload_generator=cust_payload_generator,
+#     verify=False,
+#     success_status_codes = [200],
+#     debug=False,
+# )
 
 # Define tracked global context variables
 route_tracked_vars = {
@@ -50,7 +51,7 @@ route_tracked_vars = {
 
 @app.route("/", methods=["GET", "POST"])
 @flask_chest(
-    chests=[chest_signalfx],
+    chests=[chest_influxdb],
     tracked_vars=route_tracked_vars,
 )
 def index():
