@@ -13,22 +13,8 @@ from flask_chest import FlaskChest, FlaskChestSQLite
 def flask_chest(
     chests: List[FlaskChest],
     tracked_vars: List[str],
-    request_id_generator
+    request_id_generator = None
 ):
-    """
-    The `flask_chest` function is a decorator that tracks specified variables and writes them to a table
-    in a database after the decorated function is executed.
-
-    :param table_name: The name of the table where the tracked variables will be stored
-    :param tracked_vars: The "tracked_vars" parameter is a list of variables that you want to track and store in a
-    database table. These variables can be any values that you want to keep track of during the
-    execution of the decorated function
-    :param request_id_generator: The `request_id_generator` parameter is a function that generates a
-    unique request ID for each request. This can be useful for tracking and logging purposes. If no
-    `request_id_generator` is provided, the default request ID generator will be used
-    :return: The function `decorator` is being returned.
-    """
-
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs) -> Callable:
@@ -57,7 +43,7 @@ def write_tracked_variables(chests: List[FlaskChest], tracked_vars: List[str]) -
                         value = getattr(g, var_name)
                         chest.write(var_name, value, request_id)
 
-def set_custom_request_id(request_id_generator: Optional[Callable[[], str]]):
+def set_custom_request_id(request_id_generator):
     """
     The function `set_custom_request_id` sets a custom request ID by either using a provided request ID
     generator function or generating a random UUID, and then truncates the ID if it exceeds 255

@@ -29,16 +29,10 @@ route_tracked_vars = {
     "POST": ["user_id", "data"],
 }
 
-
-def custom_request_id_generator():
-    return str(uuid.uuid4())
-
-
 @app.route("/", methods=["GET", "POST"])
 @flask_chest(
     chests=[chest1, chest2],
     tracked_vars=route_tracked_vars,
-    request_id_generator=custom_request_id_generator,
 )
 def index():
     if request.method == "GET":
