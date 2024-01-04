@@ -6,22 +6,26 @@ from dotenv import load_dotenv
 from flask import Flask, g, request
 
 # From flask-chest package
-from flask_chest import FlaskChestSQLite
+from flask_chest import FlaskChestSQLite, FlaskChestInfluxDB
 from flask_chest.decorator import flask_chest
-from flask_chest.exporter import FlaskChestExporterInfluxDB
+# from flask_chest.exporter import FlaskChestExporterInfluxDB
 
 
 app = Flask(__name__)
-chest1 = FlaskChestSQLite(app=app, db_uri="db1.sqlite3")  # Instantiate the chest
-chest2 = FlaskChestSQLite(app=app, db_uri="db2.sqlite3")  # Instantiate the chest
+# chest1 = FlaskChestSQLite(app=app, db_uri="db1.sqlite3")  # Instantiate the chest
+# chest2 = FlaskChestSQLite(app=app, db_uri="db2.sqlite3")  # Instantiate the chest
 
-# load_dotenv()
-# Instantiate the Influx exporter and set it to run every 1 minute
-# influx_exporter = FlaskChestExporterInfluxDB(
-#     chest=chest,
-#     token=os.getenv("INFLUXDB_TOKEN"),
-#     interval_minutes=1,
-# )
+load_dotenv()
+
+chest1 = FlaskChestInfluxDB(
+    app=app,
+    https=False,
+    host="localhost",
+    port=8086,
+    token=os.getenv("INFLUXDB_TOKEN"),
+    org="my-org",
+    bucket="my-bucket",
+)
 
 # Define tracked global context variables
 route_tracked_vars = {
@@ -31,7 +35,7 @@ route_tracked_vars = {
 
 @app.route("/", methods=["GET", "POST"])
 @flask_chest(
-    chests=[chest1, chest2],
+    chests=[chest1],
     tracked_vars=route_tracked_vars,
 )
 def index():
