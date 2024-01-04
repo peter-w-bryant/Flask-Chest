@@ -1,1 +1,1 @@
-from .chests import FlaskChest, FlaskChestSQLite, FlaskChestInfluxDB
+from .chests import FlaskChest, FlaskChestSQLite, FlaskChestInfluxDB, FlaskChestCustomWriter
