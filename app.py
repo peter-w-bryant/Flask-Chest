@@ -6,19 +6,26 @@ from dotenv import load_dotenv
 from flask import Flask, g, request
 
 # From flask-chest package
-from flask_chest import FlaskChestSQLite
+from flask_chest import FlaskChestSQLite, FlaskChestInfluxDB
 from flask_chest.decorator import flask_chest
-from flask_chest.exporter import FlaskChestExporterInfluxDB
+# from flask_chest.exporter import FlaskChestExporterInfluxDB
+
+
+app = Flask(__name__)
+# chest2 = FlaskChestSQLite(app=app, db_uri="db2.sqlite3")  # Instantiate the chest
 
 load_dotenv()
-app = Flask(__name__)
-chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")  # Instantiate the chest
 
-# Instantiate the Influx exporter and set it to run every 1 minute
-influx_exporter = FlaskChestExporterInfluxDB(
-    chest=chest,
+
+chest_sqlite = FlaskChestSQLite(app=app, db_uri="db1.sqlite3")  # Instantiate the chest
+chest_influxdb = FlaskChestInfluxDB(
+    app=app,
+    https=False,
+    host="localhost",
+    port=8086,
     token=os.getenv("INFLUXDB_TOKEN"),
-    interval_minutes=1,
+    org="my-org",
+    bucket="my-bucket",
 )
 
 # Define tracked global context variables
@@ -27,15 +34,10 @@ route_tracked_vars = {
     "POST": ["user_id", "data"],
 }
 
-
-def custom_request_id_generator():
-    return str(uuid.uuid4())
-
-
 @app.route("/", methods=["GET", "POST"])
 @flask_chest(
+    chests=[chest_sqlite, chest_influxdb],
     tracked_vars=route_tracked_vars,
-    request_id_generator=custom_request_id_generator,
 )
 def index():
     if request.method == "GET":
