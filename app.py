@@ -10,16 +10,18 @@ from flask_chest import FlaskChestSQLite
 from flask_chest.decorator import flask_chest
 from flask_chest.exporter import FlaskChestExporterInfluxDB
 
-load_dotenv()
-app = Flask(__name__)
-chest = FlaskChestSQLite(app=app, db_uri="db.sqlite3")  # Instantiate the chest
 
+app = Flask(__name__)
+chest1 = FlaskChestSQLite(app=app, db_uri="db1.sqlite3")  # Instantiate the chest
+chest2 = FlaskChestSQLite(app=app, db_uri="db2.sqlite3")  # Instantiate the chest
+
+# load_dotenv()
 # Instantiate the Influx exporter and set it to run every 1 minute
-influx_exporter = FlaskChestExporterInfluxDB(
-    chest=chest,
-    token=os.getenv("INFLUXDB_TOKEN"),
-    interval_minutes=1,
-)
+# influx_exporter = FlaskChestExporterInfluxDB(
+#     chest=chest,
+#     token=os.getenv("INFLUXDB_TOKEN"),
+#     interval_minutes=1,
+# )
 
 # Define tracked global context variables
 route_tracked_vars = {
@@ -34,6 +36,7 @@ def custom_request_id_generator():
 
 @app.route("/", methods=["GET", "POST"])
 @flask_chest(
+    chests=[chest1, chest2],
     tracked_vars=route_tracked_vars,
     request_id_generator=custom_request_id_generator,
 )
