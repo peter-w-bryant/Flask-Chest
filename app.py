@@ -12,12 +12,13 @@ from flask_chest.decorator import flask_chest
 
 
 app = Flask(__name__)
-# chest1 = FlaskChestSQLite(app=app, db_uri="db1.sqlite3")  # Instantiate the chest
 # chest2 = FlaskChestSQLite(app=app, db_uri="db2.sqlite3")  # Instantiate the chest
 
 load_dotenv()
 
-chest1 = FlaskChestInfluxDB(
+
+chest_sqlite = FlaskChestSQLite(app=app, db_uri="db1.sqlite3")  # Instantiate the chest
+chest_influxdb = FlaskChestInfluxDB(
     app=app,
     https=False,
     host="localhost",
@@ -35,7 +36,7 @@ route_tracked_vars = {
 
 @app.route("/", methods=["GET", "POST"])
 @flask_chest(
-    chests=[chest1],
+    chests=[chest_sqlite, chest_influxdb],
     tracked_vars=route_tracked_vars,
 )
 def index():

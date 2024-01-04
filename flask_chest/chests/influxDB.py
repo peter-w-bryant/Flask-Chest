@@ -73,12 +73,11 @@ def create_influxdb_datapoint(
     request_id: str = None,
 ):
     data_point = {
-        "measurement": "sample",
+        "measurement": variable_name,
         "tags": {
             "request_id": request_id,
         },
         "fields": {
-            "name": variable_name,
             "value": variable_value,
         },
         "time": int(time.time() * 1e9),
