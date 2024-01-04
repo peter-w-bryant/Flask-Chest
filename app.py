@@ -25,23 +25,23 @@ chest_influxdb = FlaskChestInfluxDB(
     bucket="my-bucket",
 )
 
-# def cust_payload_generator(context_tuple_list):
-#     payload = {}    
-#     for i, context_tuple in enumerate(context_tuple_list):
-#         payload[i] = context_tuple
-#     return payload
+def cust_payload_generator(context_tuple_list):
+    payload = {}    
+    for i, context_tuple in enumerate(context_tuple_list):
+        payload[i] = context_tuple
+    return payload
 
-# chest_signalfx = FlaskChestCustomWriter(
-#     app=app,
-#     https=False,
-#     host="localhost",
-#     port="3000",
-#     headers=None,
-#     payload_generator=cust_payload_generator,
-#     verify=False,
-#     success_status_codes = [200],
-#     debug=False,
-# )
+chest_signalfx = FlaskChestCustomWriter(
+    app=app,
+    https=False,
+    host="localhost",
+    port="3000",
+    headers=None,
+    payload_generator=cust_payload_generator,
+    verify=False,
+    success_status_codes = [200],
+    debug=False,
+)
 
 # Define tracked global context variables
 route_tracked_vars = {
@@ -51,7 +51,7 @@ route_tracked_vars = {
 
 @app.route("/", methods=["GET", "POST"])
 @flask_chest(
-    chests=[chest_influxdb],
+    chests=[chest_influxdb, chest_signalfx],
     tracked_vars=route_tracked_vars,
 )
 def index():
