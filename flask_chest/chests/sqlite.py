@@ -58,9 +58,7 @@ class FlaskChestSQLite(FlaskChest):
 
     def write(
         self,
-        variable_name: str,
-        variable_value: str,
-        request_id: str = None,
+        context_tuple_list: list,
     ) -> None:
         """
         Write a key-value pair to the SQLite database.
@@ -75,16 +73,20 @@ class FlaskChestSQLite(FlaskChest):
 
         """
         try:
-            successful_write: bool = sqlite_write(
-                self.db_uri,
-                DEFAULT_SCHEMA,
-                variable_name,
-                variable_value,
-                request_id,
-            )
+            
+            for context_tuple in context_tuple_list:
+                variable_name, variable_value, request_id = context_tuple
+            
+                successful_write: bool = sqlite_write(
+                    self.db_uri,
+                    DEFAULT_SCHEMA,
+                    variable_name,
+                    variable_value,
+                    request_id,
+                )
 
-            if not successful_write:
-                raise Exception("Unable to write to database!")
+                if not successful_write:
+                    raise Exception("Unable to write to database!")
 
         except Exception:
             print(traceback.print_exc())

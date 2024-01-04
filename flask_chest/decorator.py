@@ -37,10 +37,13 @@ def write_tracked_variables(chests: List[FlaskChest], tracked_vars: List[str]) -
             if request.method == request_method.upper():
                 
                 # For each global context var in the list of tracked vars
+                context_tuple_list = []
                 for var_name in context_vars:
                     if hasattr(g, var_name):
                         value = getattr(g, var_name)
-                        chest.write(var_name, value, request_id)
+                        context_tuple_list.append((var_name, value, request_id))
+                    
+                chest.write(context_tuple_list)
 
 def set_custom_request_id(request_id_generator):
     """

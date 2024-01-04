@@ -45,14 +45,12 @@ class FlaskChestCustomWriter(FlaskChest):
         
     def write(
         self,
-        variable_name: str,
-        variable_value: str,
-        request_id: str = None,
+        context_tuple_list: list,
     ) -> None:
         try:
             
             # Build the payload
-            payload = self.payload_generator(variable_name, variable_value, request_id)
+            payload = self.payload_generator(context_tuple_list)
             
             # Send the POST request
             response = requests.post(
