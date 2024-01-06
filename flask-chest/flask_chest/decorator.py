@@ -3,27 +3,35 @@
 import uuid
 from functools import wraps
 from typing import Callable, List, Optional
-from icecream import ic
+
 from flask import current_app, g, request
+from icecream import ic
 
 from flask_chest import FlaskChest
+
 
 def flask_chest(
     chests: List[FlaskChest],
     tracked_vars: List[str],
-    request_id_generator = None
+    request_id_generator=None,
+    raise_exceptions: bool = True,
 ):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs) -> Callable:
             set_custom_request_id(request_id_generator)
             response = func(*args, **kwargs)
-            write_tracked_variables(chests, tracked_vars)
+            write_tracked_variables(chests, tracked_vars, raise_exceptions)
             return response
+
         return wrapper
+
     return decorator
 
-def write_tracked_variables(chests: List[FlaskChest], tracked_vars: List[str]) -> None:
+
+def write_tracked_variables(
+    chests: List[FlaskChest], tracked_vars: List[str], raise_exceptions: bool
+) -> None:
     # Write tracked variables to each chest
     for chest in chests:
         request_id = getattr(g, "custom_request_id", None)
@@ -36,7 +44,20 @@ def write_tracked_variables(chests: List[FlaskChest], tracked_vars: List[str]) -
                     if hasattr(g, var_name):
                         value = getattr(g, var_name)
                         context_tuple_list.append((var_name, value, request_id))
-                chest.write(context_tuple_list) # Generic write for all chest types
+                if raise_exceptions:
+                    try:
+                        # Generic write for all chest types
+                        chest.write(context_tuple_list)
+                    except Exception as e:
+                        raise e
+                else:
+                    try:
+                        # Generic write for all chest types
+                        chest.write(context_tuple_list)
+                    except Exception as e:
+                        if chest.logger:
+                            chest.logger.debug(e)
+
 
 def set_custom_request_id(request_id_generator):
     """

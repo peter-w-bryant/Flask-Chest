@@ -75,13 +75,13 @@ class FlaskChestInfluxDB(FlaskChest):
             write_api = client.write_api(write_options=SYNCHRONOUS)
             write_api.write(bucket=self.bucket, org=self.org, record=data_point_list)
 
-        except Exception:
             if self.logger.level == logging.DEBUG:
-                self.logger.debug(f"FlaskChestInfluxDB: {traceback.format_exc()}")
-            self.logger.error(
+                self.logger.debug("FlaskChestInfluxDB: Successfully wrote to InfluxDB!")
+
+        except Exception:
+            raise Exception(
                 "FlaskChestInfluxDB: Error occurred when writing to InfluxDB!"
             )
-            raise Exception("Error occurred when writing to InfluxDB!")
 
 
 def create_influxdb_datapoint(

@@ -31,7 +31,6 @@ file_handler.setFormatter(formatter)
 # Add the file handler to the logger
 logger.addHandler(file_handler)
 
-# chest_sqlite = FlaskChestSQLite(app=app, db_uri="db1.sqlite3")  # Instantiate the chest
 chest_influxdb = FlaskChestInfluxDB(
     app=app,
     https=False,
@@ -61,7 +60,7 @@ chest_signalfx = FlaskChestCustomWriter(
     payload_generator=cust_payload_generator,
     verify=False,
     success_status_codes=[200],
-    debug=False,
+    logger=logger,
 )
 
 # Define tracked global context variables
@@ -75,6 +74,7 @@ route_tracked_vars = {
 @flask_chest(
     chests=[chest_influxdb, chest_signalfx],
     tracked_vars=route_tracked_vars,
+    raise_exceptions=False,
 )
 def index():
     if request.method == "GET":
