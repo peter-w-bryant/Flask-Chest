@@ -4,7 +4,6 @@ import time
 import traceback
 
 from flask import Flask
-from icecream import ic
 from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -52,8 +51,10 @@ class FlaskChestInfluxDB(FlaskChest):
     ) -> None:
         try:
             if self.logger.level == logging.DEBUG:
-                self.logger.debug("Writing to InfluxDB...")
-                self.logger.debug(f"Context tuple list: {context_tuple_list}")
+                self.logger.debug("FlaskChestInfluxDB: Writing to InfluxDB...")
+                self.logger.debug(
+                    f"FlaskChestInfluxDB: Context tuple list: {context_tuple_list}"
+                )
 
             data_point_list = []
             for context_tuple in context_tuple_list:
@@ -76,8 +77,10 @@ class FlaskChestInfluxDB(FlaskChest):
 
         except Exception:
             if self.logger.level == logging.DEBUG:
-                self.logger.debug(traceback.format_exc())
-            self.logger.error("Error occurred when writing to InfluxDB!")
+                self.logger.debug(f"FlaskChestInfluxDB: {traceback.format_exc()}")
+            self.logger.error(
+                "FlaskChestInfluxDB: Error occurred when writing to InfluxDB!"
+            )
             raise Exception("Error occurred when writing to InfluxDB!")
 
 
