@@ -15,6 +15,21 @@
 
 </center>
 
+## Table of Contents
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Flask-Chest Interfaces](#flask-chest-interfaces)
+  - [FlaskChestInfluxDB](#flaskchestinfluxdb)
+    - [Default Parameter Values for FlaskChestInfluxDB](#default-parameter-values-for-flaskchestinfluxdb)
+    - [Sample Usage](#sample-usage)
+  - [FlaskChestCustomWriter](#flaskchestcustomwriter)
+    - [Default Parameter Values for FlaskChestCustomWriter](#default-parameter-values-for-flaskchestcustomwriter)
+    - [Sample Usage](#sample-usage-1)
+- [The `flask_chest` Decorator](#the-flask_chest-decorator)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Introduction
 
 Flask-Chest is a Python package for Flask applications, providing a decorator to track and record global context variables (`g.variables`) for each request. It interfaces with various databases to store and export these variables, serving as a tool for monitoring and analytics in Flask web applications.
@@ -32,7 +47,7 @@ Flask-Chest is a Python package for Flask applications, providing a decorator to
 pip install flask-chest
 ```
 
-## Interfaces
+## Flask-Chest Interfaces
 
 ### FlaskChestInfluxDB
 The `FlaskChestInfluxDB` class is a Flask extension for storing key-value pairs in an InfluxDB database. It provides an interface to write data points to InfluxDB with custom tags.
@@ -87,7 +102,7 @@ chest_influxdb = FlaskChestInfluxDB(
 )
 ```
 
-### FlaskChestCustomWriter Interface
+### FlaskChestCustomWriter
 The `FlaskChestCustomWriter` class allows for writing key-value pairs to a custom backend by making HTTP POST requests with a custom payload.
 
 #### Default Parameter Values for FlaskChestCustomWriter
@@ -152,7 +167,6 @@ The `raise_exceptions` parameter is a boolean that determines whether exceptions
 
 ### Sample Usage
 The following code snippet shows how to apply the `flask_chest` decorator to a Flask route. During a `GET` request, this decorator will write the variables `user_id`, `session_id`, and `total_time` to the configured chests after the route function is executed. The `request_id_generator` parameter is set to a custom function that returns a string representing the current date and time.
-
 
 ```python
 def custom_request_id_generator():
