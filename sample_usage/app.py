@@ -52,11 +52,9 @@ def cust_payload_generator(context_tuple_list):
 
 
 chest_signalfx = FlaskChestCustomWriter(
-    app=app,
-    https=False,
-    host="localhost",
-    port="3000",
+    url="http://localhost:3000",
     headers=None,
+    params=None,
     payload_generator=cust_payload_generator,
     verify=False,
     success_status_codes=[200],
@@ -72,9 +70,9 @@ route_tracked_vars = {
 
 @app.route("/", methods=["GET", "POST"])
 @flask_chest(
-    chests=[chest_influxdb, chest_signalfx],
+    chests=[chest_signalfx],
     tracked_vars=route_tracked_vars,
-    raise_exceptions=False,
+    raise_exceptions=True,
 )
 def index():
     if request.method == "GET":
@@ -83,8 +81,9 @@ def index():
         g.session_id = "abc"
         time.sleep(0.1)  # Simulate a delay
         g.total_time = time.time() - g.start
+
     return "Hello, World!"
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True, port=3000)

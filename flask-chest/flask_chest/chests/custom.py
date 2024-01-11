@@ -1,10 +1,6 @@
 import json
-import logging
-import time
-import traceback
 
 import requests
-from flask import Flask
 
 from .base import FlaskChest
 
@@ -15,20 +11,19 @@ class FlaskChestCustomWriter(FlaskChest):
 
     def __init__(
         self,
-        app: Flask,
-        https=False,
-        host="localhost",
-        port="",
+        url,
         headers=None,
+        params=None,
+        proxies=None,
         payload_generator=None,
         verify=False,
         success_status_codes=[200],
         logger=None,
     ):
-        super().__init__(app)
-        http_scheme = "https" if https else "http"
-        self.url = f"{http_scheme}://{host}:{port}"
+        self.url = url
         self.headers = headers
+        self.params = params
+        self.proxies = proxies
         self.payload_generator = payload_generator
         self.verify = verify
         self.success_status_codes = success_status_codes
@@ -42,6 +37,8 @@ class FlaskChestCustomWriter(FlaskChest):
             "type": "custom_writer",
             "url": self.url,
             "headers": self.headers,
+            "params": self.params,
+            "proxies": self.proxies,
             "verify": self.verify,
             "success_status_codes": self.success_status_codes,
         }
@@ -50,30 +47,34 @@ class FlaskChestCustomWriter(FlaskChest):
         self,
         context_tuple_list: list,
     ) -> None:
-        if self.logger.level == logging.DEBUG:
-            self.logger.debug("FlaskChestCustomWriter: Writing to custom writer...")
-            self.logger.debug(
-                f"FlaskChestCustomWriter: Context tuple list: {context_tuple_list}"
+        self.logger.debug("FlaskChestCustomWriter: Writing to custom writer...")
+        self.logger.debug(
+            f"FlaskChestCustomWriter: Context tuple list: {context_tuple_list}"
+        )
+
+        try:
+            # Build the payload
+            payload = self.payload_generator(context_tuple_list)
+        except Exception as e:
+            raise Exception(
+                f"FlaskChestCustomWriter: Failure! Error generating payload: {e}"
             )
-        # Build the payload
-        payload = self.payload_generator(context_tuple_list)
 
         # Send the POST request
         response = requests.post(
             self.url,
             headers=self.headers,
-            json=payload,
+            params=self.params,
+            proxies=self.proxies,
+            data=payload,
             verify=self.verify,
         )
 
-        if (
-            self.logger.level == logging.DEBUG
-            and response.status_code in self.success_status_codes
-        ):
+        if response.status_code in self.success_status_codes:
             self.logger.debug(
-                f"FlaskChestCustomWriter: Status code {response.status_code} received from custom writer!"
+                f"FlaskChestCustomWriter: Success! Status code {response.status_code} received from custom writer! {response.text}"
             )
         else:
             raise Exception(
-                f"FlaskChestCustomWriter: Status code {response.status_code} not in success status codes {self.success_status_codes}!"
+                f"FlaskChestCustomWriter: Failure! Status code {response.status_code} not in success status codes {self.success_status_codes}! {response.text}"
             )

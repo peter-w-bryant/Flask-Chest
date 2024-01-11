@@ -8,6 +8,7 @@ DEFAULT_SCHEMA = {
     },
 }
 
+
 class FlaskChest:
     """
     Flask extension for storing and retrieving key-value pairs in a SQLite database.
@@ -24,11 +25,11 @@ class FlaskChest:
         self.app = app
 
         # Register extension with app
-        if not hasattr(app, "extensions"):
-            app.extensions = {}
-            app.extensions["flask_chest"] = [self]
-        else:
-            if "flask_chest" not in app.extensions:
-                app.extensions["flask_chest"] = [self]
-            else:
-                app.extensions["flask_chest"].append(self)
+        # if not hasattr(app, "extensions"):
+        #     app.extensions = {}
+        #     app.extensions["flask_chest"] = [self]
+        # else:
+        #     if "flask_chest" not in app.extensions:
+        #         app.extensions["flask_chest"] = [self]
+        #     else:
+        #         app.extensions["flask_chest"].append(self)
