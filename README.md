@@ -108,7 +108,7 @@ The following code snippet shows how to initialize a `FlaskChestCustomWriter` ob
 
 ```python
 from typing import List, Tuple, Dict
-def cust_payload_generator(context_tuple_list: List[Tuple[str, Any, str]]) -> Dict[Any, Tuple[str, str, str]]:
+def cust_payload_generator(context_tuple_list: List[Tuple[str, Any, str]]):
     """Generates a data payload for the custom writer.
     Args:
         context_tuple_list (List[Tuple[str, Any, str]]): A list of tuples of the form
