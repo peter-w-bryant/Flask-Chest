@@ -11,7 +11,7 @@ class FlaskChestCustomWriter(FlaskChest):
 
     def __init__(
         self,
-        url,
+        url=None,
         headers=None,
         params=None,
         proxies=None,
