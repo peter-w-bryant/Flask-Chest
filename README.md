@@ -25,6 +25,7 @@
     - [Sample Usage](#sample-usage)
   - [FlaskChestCustomWriter](#flaskchestcustomwriter)
     - [Default Parameter Values for FlaskChestCustomWriter](#default-parameter-values-for-flaskchestcustomwriter)
+    - [Payload Generator Function](#payload-generator-function)
     - [Sample Usage](#sample-usage-1)
 - [The `flask_chest` Decorator](#the-flask_chest-decorator)
 - [Contributing](#contributing)
@@ -50,16 +51,13 @@ pip install flask-chest
 ## Flask-Chest Interfaces
 
 ### FlaskChestInfluxDB
-The `FlaskChestInfluxDB` class is a Flask extension for storing key-value pairs in an InfluxDB database. It provides an interface to write data points to InfluxDB with custom tags.
+The `FlaskChestInfluxDB` class is a Flask extension for storing key-value pairs in an InfluxDB database. It provides an interface to write data points to `InfluxDB 2.X` using the `influxdb-client` library.
 
 #### Default Parameter Values for FlaskChestInfluxDB
 
 | Parameter       | Default Value | Description                                                  |
 |-----------------|---------------|--------------------------------------------------------------|
-| app             | None          | The Flask application instance.                              |
-| https           | False         | Whether to use HTTPS for the InfluxDB connection.            |
-| host            | "localhost"   | The InfluxDB host.                                           |
-| port            | 8086          | The InfluxDB port.                                           |
+| url             | None          | The URL of the InfluxDB server.                              |
 | token           | ""            | The InfluxDB authentication token.                           |
 | org             | "my-org"      | The InfluxDB organization.                                   |
 | bucket          | "my-bucket"   | The InfluxDB bucket.                                         |
@@ -70,30 +68,11 @@ The `custom_tags` parameter is optional and can be used to add custom tags to ea
 
 #### Sample Usage
 
-The following code snippet shows how to initialize a `FlaskChestInfluxDB` object in a Flask application. This object logs all DEBUG messages to a file named `app.log`, and writes data points to an InfluxDB database running on `localhost:8086` with the provided authentication token. The data points are written to the `my-bucket` bucket in the `my-org` organization, and custom tags are added to each data point.
+The following code snippet shows how to initialize a `FlaskChestInfluxDB` object in a Flask application. This object will write data points to an InfluxDB database running on `localhost:8086` with the provided authentication token when passed as an argument to the [`flask_chest` decorator](#the-flask_chest-decorator). The data points are written to the `my-bucket` bucket in the `my-org` organization, and custom tags are added to each data point.
 
 ```python
-# Create a logger
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# Create a file handler and set the log file path
-log_file = "app.log"
-file_handler = logging.FileHandler(log_file)
-
-# Create a log formatter and set the format
-formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-file_handler.setFormatter(formatter)
-
-# Add the file handler to the logger
-logger.addHandler(file_handler)
-
-# Initialize the InfluxDB chest
 chest_influxdb = FlaskChestInfluxDB(
-    app=app,
-    https=False,
-    host="localhost",
-    port=8086,
+    url="http://localhost:8086",
     token=os.getenv("INFLUXDB_TOKEN"),
     org="my-org",
     bucket="my-bucket",
@@ -109,40 +88,51 @@ The `FlaskChestCustomWriter` class allows for writing key-value pairs to a custo
 
 | Parameter          | Default Value | Description                                                  |
 |--------------------|---------------|--------------------------------------------------------------|
-| app                | None          | The Flask application instance.                              |
-| https              | False         | Whether to use HTTPS for the custom writer connection.       |
-| host               | "localhost"   | The custom writer host.                                      |
-| port               | ""            | The custom writer port.                                      |
+| url                | None          | The URL of the custom writer will POST data to.              |
 | headers            | None          | HTTP headers to be sent with the POST request.               |
-| payload_generator  | None          | A function that generates the payload for the POST request.  |
+| params             | None          | URL parameters to be sent with the POST request.             |
+| proxies            | None          | Proxy URLs to be used for the POST request.                  |
+| payload_generator  | None          | A function that generates the payload for the POST request (see [Payload Generator Function](#payload-generator-function)). |
 | verify             | False         | Whether to verify the server's TLS certificate.              |
 | success_status_codes | [200]       | List of HTTP status codes considered as success.             |
 | logger             | None          | Logger instance for logging messages.                        |
 
-The `payload_generator` parameter is a function that takes `context_tuple_list` as an argument and returns a dictionary. This list contains tuples of the form `(variable_name, variable_value, request_id)`, where `variable_name` is a string representing the name of the variable, `variable_value` is the value of the variable and can be any type, and `request_id` is a string representing the unique ID of the request.
 
-This dictionary is used as the payload for the POST request to the custom writer.
+#### Payload Generator Function
+When using the `FlaskChestCustomWriter` class, a `payload_generator` function must be provided. This function is used to generate the payload for the POST request every time the [`flask_chest` decorator](#the-flask_chest-decorator) is applied to a Flask route. This function must take a list of 3-tuples as an argument and it can return any payload (e.g. a string, a dictionary, etc.), as long as it is JSON serializable. The payload will be sent as the body of the POST request to the custom writer.
+
+Each 3-tuple in the list represents a global context variable to be written to the custom writer. The first element of the tuple is a string representing the name of the variable, the second element is the value of the variable, and the third element is a string representing the unique ID of the request. Thus, each 3-tuple is an object of the form `(variable_name, variable_value, request_id)`. The order of the tuples in the list is the same as the order of the variables in the `tracked_vars` parameter of the [`flask_chest` decorator](#the-flask_chest-decorator).
+
+
+The `verify` parameter is used to verify the server's TLS certificate, and the `success_status_codes` parameter is a list of HTTP status codes that are considered as success. If the response status code is not in this list, an exception will be raised.
 
 #### Sample Usage
-The following code snippet shows how to initialize a `FlaskChestCustomWriter` object in a Flask application. This object logs all DEBUG messages to a file named `app.log`, and writes data points to a custom writer running on `localhost:3000`. The data points are written to the custom writer using a custom payload generator function; in this case, the payload is a dictionary where the keys are integers and the values are tuples of the form `(variable_name, variable_value, request_id)`.
+The following code snippet shows how to initialize a `FlaskChestCustomWriter` object in a Flask application. This object logs all DEBUG messages using the provided logger instance, does not verify the server's TLS certificate, considers HTTP status codes `200` and `201` as success, does not send any headers or URL parameters with the POST request, does not use any proxies, uses a custom payload generator function, and writes data points to a custom writer running on `localhost:3000`. The data points are written to the custom writer using a custom payload generator function; in this case, the payload is a dictionary where the keys are integers and the values are tuples of the form `(variable_name, variable_value, request_id)`.
 
 ```python
-def cust_payload_generator(context_tuple_list: List[Tuple[str, Any, str]]) -> Dict[int, Tuple[str, Any, str]]:
+from typing import List, Tuple, Dict
+def cust_payload_generator(context_tuple_list: List[Tuple[str, Any, str]]) -> Dict[Any, Tuple[str, str, str]]:
+    """Generates a data payload for the custom writer.
+    Args:
+        context_tuple_list (List[Tuple[str, Any, str]]): A list of tuples of the form
+        (variable_name, variable_value, request_id)
+
+    Returns:
+        Dict[int, Tuple[str, str, str]]: A dictionary of the form
+        {0: (variable_name, variable_value, request_id), 1: (variable_name, variable_value, request_id), ...}
+    """
     payload = {}
     for i, context_tuple in enumerate(context_tuple_list):
         payload[i] = context_tuple
     return payload
 
-
-chest_signalfx = FlaskChestCustomWriter(
-    app=app,
-    https=False,
-    host="localhost",
-    port="3000",
+chest_custom_writer = FlaskChestCustomWriter(
+    url="http://localhost:3000",
     headers=None,
+    params=None,
     payload_generator=cust_payload_generator,
     verify=False,
-    success_status_codes=[200],
+    success_status_codes=[200, 201],
     logger=logger,
 )
 ```
@@ -181,7 +171,7 @@ route_tracked_vars = {
 
 @app.route("/", methods=["GET", "POST"])
 @flask_chest(
-    chests=[chest_influxdb, chest_signalfx],
+    chests=[chest_influxdb, chest_custom_writer],
     tracked_vars=route_tracked_vars,
     request_id_generator=custom_request_id_generator,
     raise_exceptions=False,
