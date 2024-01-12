@@ -6,8 +6,7 @@ from .base import FlaskChest
 
 
 class FlaskChestCustomWriter(FlaskChest):
-    """Payload generator is must be a function that takes variable_name, variable_value, and request_id as arguments and returns a dictionary
-    which will be used as the payload for the POST request to the custom writer"""
+    """A FlaskChest that writes to a custom endpoint."""
 
     def __init__(
         self,
