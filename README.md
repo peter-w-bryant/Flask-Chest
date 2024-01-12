@@ -9,7 +9,7 @@
 <center>
 
 ![Language](https://img.shields.io/badge/language-Python-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-0.0.10-blue.svg)
 ![Framework](https://img.shields.io/badge/framework-Flask-orange.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
@@ -20,13 +20,13 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Flask-Chest Interfaces](#flask-chest-interfaces)
-  - [FlaskChestInfluxDB](#flaskchestinfluxdb)
-    - [Default Parameter Values for FlaskChestInfluxDB](#default-parameter-values-for-flaskchestinfluxdb)
-    - [Sample Usage](#sample-usage)
   - [FlaskChestCustomWriter](#flaskchestcustomwriter)
     - [Default Parameter Values for FlaskChestCustomWriter](#default-parameter-values-for-flaskchestcustomwriter)
     - [Payload Generator Function](#payload-generator-function)
     - [Sample Usage](#sample-usage-1)
+  - [FlaskChestInfluxDB](#flaskchestinfluxdb)
+    - [Default Parameter Values for FlaskChestInfluxDB](#default-parameter-values-for-flaskchestinfluxdb)
+    - [Sample Usage](#sample-usage)
 - [The `flask_chest` Decorator](#the-flask_chest-decorator)
 - [Contributing](#contributing)
 - [License](#license)
@@ -50,37 +50,6 @@ pip install flask-chest
 
 ## Flask-Chest Interfaces
 
-### FlaskChestInfluxDB
-The `FlaskChestInfluxDB` class is a Flask extension for storing key-value pairs in an InfluxDB database. It provides an interface to write data points to `InfluxDB 2.X` using the `influxdb-client` library.
-
-#### Default Parameter Values for FlaskChestInfluxDB
-
-| Parameter       | Default Value | Description                                                  |
-|-----------------|---------------|--------------------------------------------------------------|
-| url             | None          | The URL of the InfluxDB server.                              |
-| token           | ""            | The InfluxDB authentication token.                           |
-| org             | "my-org"      | The InfluxDB organization.                                   |
-| bucket          | "my-bucket"   | The InfluxDB bucket.                                         |
-| custom_tags     | {}            | Custom tags to be included with each data point.             |
-| logger          | None          | Logger instance for logging messages.                        |
-
-The `custom_tags` parameter is optional and can be used to add custom tags to each data point written to InfluxDB. The `logger` parameter is also optional and allows a user to provide a custom logger instance for logging messages
-
-#### Sample Usage
-
-The following code snippet shows how to initialize a `FlaskChestInfluxDB` object in a Flask application. This object will write data points to an InfluxDB database running on `localhost:8086` with the provided authentication token when passed as an argument to the [`flask_chest` decorator](#the-flask_chest-decorator). The data points are written to the `my-bucket` bucket in the `my-org` organization, and custom tags are added to each data point.
-
-```python
-chest_influxdb = FlaskChestInfluxDB(
-    url="http://localhost:8086",
-    token=os.getenv("INFLUXDB_TOKEN"),
-    org="my-org",
-    bucket="my-bucket",
-    custom_tags={"app": "your-app-name"},
-    logger=logger,
-)
-```
-
 ### FlaskChestCustomWriter
 The `FlaskChestCustomWriter` class allows for writing key-value pairs to a custom backend by making HTTP POST requests with a custom payload.
 
@@ -89,6 +58,7 @@ The `FlaskChestCustomWriter` class allows for writing key-value pairs to a custo
 | Parameter          | Default Value | Description                                                  |
 |--------------------|---------------|--------------------------------------------------------------|
 | url                | None          | The URL of the custom writer will POST data to.              |
+| name               | url           | The name of the custom writer. Defaults to your url.         |
 | headers            | None          | HTTP headers to be sent with the POST request.               |
 | params             | None          | URL parameters to be sent with the POST request.             |
 | proxies            | None          | Proxy URLs to be used for the POST request.                  |
@@ -130,6 +100,37 @@ chest_custom_writer = FlaskChestCustomWriter(
     payload_generator=cust_payload_generator,
     verify=False,
     success_status_codes=[200, 201],
+    logger=logger,
+)
+```
+
+### FlaskChestInfluxDB
+The `FlaskChestInfluxDB` class is a Flask extension for storing key-value pairs in an InfluxDB database. It provides an interface to write data points to `InfluxDB 2.X` using the `influxdb-client` library.
+
+#### Default Parameter Values for FlaskChestInfluxDB
+
+| Parameter       | Default Value | Description                                                  |
+|-----------------|---------------|--------------------------------------------------------------|
+| url             | None          | The URL of the InfluxDB server.                              |
+| token           | ""            | The InfluxDB authentication token.                           |
+| org             | "my-org"      | The InfluxDB organization.                                   |
+| bucket          | "my-bucket"   | The InfluxDB bucket.                                         |
+| custom_tags     | {}            | Custom tags to be included with each data point.             |
+| logger          | None          | Logger instance for logging messages.                        |
+
+The `custom_tags` parameter is optional and can be used to add custom tags to each data point written to InfluxDB. The `logger` parameter is also optional and allows a user to provide a custom logger instance for logging messages
+
+#### Sample Usage
+
+The following code snippet shows how to initialize a `FlaskChestInfluxDB` object in a Flask application. This object will write data points to an InfluxDB database running on `localhost:8086` with the provided authentication token when passed as an argument to the [`flask_chest` decorator](#the-flask_chest-decorator). The data points are written to the `my-bucket` bucket in the `my-org` organization, and custom tags are added to each data point.
+
+```python
+chest_influxdb = FlaskChestInfluxDB(
+    url="http://localhost:8086",
+    token=os.getenv("INFLUXDB_TOKEN"),
+    org="my-org",
+    bucket="my-bucket",
+    custom_tags={"app": "your-app-name"},
     logger=logger,
 )
 ```
