@@ -12,7 +12,7 @@ if os.path.isfile(requirements):
 
 setuptools.setup(
     name="flask-chest",
-    version="0.0.9",
+    version="0.0.10",
     author="Peter Bryant",
     author_email="peter.bryant@gatech.edu",
     description="A Python package for Flask applications, providing a decorator to track and record global context variables (g.variables) for each request.",
