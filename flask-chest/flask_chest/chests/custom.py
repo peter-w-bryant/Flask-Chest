@@ -11,6 +11,7 @@ class FlaskChestCustomWriter(FlaskChest):
 
     def __init__(
         self,
+        name=None,
         url=None,
         headers=None,
         params=None,
@@ -20,7 +21,12 @@ class FlaskChestCustomWriter(FlaskChest):
         success_status_codes=[200],
         logger=None,
     ):
+        self.name = name
         self.url = url
+
+        if self.name is None:
+            self.name = self.url
+
         self.headers = headers
         self.params = params
         self.proxies = proxies
@@ -47,17 +53,18 @@ class FlaskChestCustomWriter(FlaskChest):
         self,
         context_tuple_list: list,
     ) -> None:
-        self.logger.debug("FlaskChestCustomWriter: Writing to custom writer...")
-        self.logger.debug(
-            f"FlaskChestCustomWriter: Context tuple list: {context_tuple_list}"
-        )
+        self.logger.info(f"Writing to FlaskChestCustomWriter(name={self.name})")
+        self.logger.debug(f"Writing context tuple list: {context_tuple_list}")
 
+        # Generate the payload, throw an exception if it fails
         try:
-            # Build the payload
             payload = self.payload_generator(context_tuple_list)
-        except Exception as e:
+        except Exception:
+            self.logger.exception(
+                f"Error generating payload for FlaskChestCustomWriter(name={self.name})"
+            )
             raise Exception(
-                f"FlaskChestCustomWriter: Failure! Error generating payload: {e}"
+                f"Error generating payload for FlaskChestCustomWriter(name={self.name})"
             )
 
         # Send the POST request
@@ -70,11 +77,22 @@ class FlaskChestCustomWriter(FlaskChest):
             verify=self.verify,
         )
 
+        self.logger.debug(
+            f"Response code from FlaskChestCustomWriter(name={self.name} POST request: {response.status_code}"
+        )
+        self.logger.debug(
+            f"Response from FlaskChestCustomWriter(name={self.name} POST request: {response.text}"
+        )
+
+        # If the response status code is in the success status codes, log success
         if response.status_code in self.success_status_codes:
             self.logger.debug(
-                f"FlaskChestCustomWriter: Success! Status code {response.status_code} received from custom writer! {response.text}"
+                f"Successful write to FlaskChestCustomWriter(name={self.name})"
             )
         else:
+            self.logger.exception(
+                f"Error response code returned when writing to FlaskChestCustomWriter(name={self.name}), {response.status_code} not in success status codes {self.success_status_codes}! {response.text}"
+            )
             raise Exception(
-                f"FlaskChestCustomWriter: Failure! Status code {response.status_code} not in success status codes {self.success_status_codes}! {response.text}"
+                f"Error response code returned when writing to FlaskChestCustomWriter(name={self.name}), {response.status_code} not in success status codes {self.success_status_codes}! {response.text}"
             )
