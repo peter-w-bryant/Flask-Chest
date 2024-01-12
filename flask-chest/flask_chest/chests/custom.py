@@ -41,6 +41,7 @@ class FlaskChestCustomWriter(FlaskChest):
     def to_dict(self):
         return {
             "type": "custom_writer",
+            "name": self.name,
             "url": self.url,
             "headers": self.headers,
             "params": self.params,
