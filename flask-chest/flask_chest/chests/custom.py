@@ -78,15 +78,15 @@ class FlaskChestCustomWriter(FlaskChest):
         )
 
         self.logger.debug(
-            f"Response code from FlaskChestCustomWriter(name={self.name} POST request: {response.status_code}"
+            f"Response code from FlaskChestCustomWriter(name={self.name}) POST request: {response.status_code}"
         )
         self.logger.debug(
-            f"Response from FlaskChestCustomWriter(name={self.name} POST request: {response.text}"
+            f"Response from FlaskChestCustomWriter(name={self.name}) POST request: {response.text}"
         )
 
         # If the response status code is in the success status codes, log success
         if response.status_code in self.success_status_codes:
-            self.logger.debug(
+            self.logger.info(
                 f"Successful write to FlaskChestCustomWriter(name={self.name})"
             )
         else:
