@@ -196,8 +196,21 @@
         <article role="main">
           <section id="basic-application">
 <h1>Basic Application<a class="headerlink" href="#basic-application" title="Link to this heading">#</a></h1>
-<p>The following code snippet shows how to initialize a <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code> object in a Flask application. This object will write data points to an InfluxDB database running on <code class="docutils literal notranslate"><span class="pre">localhost:8086</span></code> with the provided authentication token when passed as an argument to the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator. The data points are written to the <code class="docutils literal notranslate"><span class="pre">my-bucket</span></code> bucket in the <code class="docutils literal notranslate"><span class="pre">my-org</span></code> organization, and custom tags are added to each data point.</p>
+<p>Below is an example of a basic Flask route that uses the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to write to both an InfluxDB 2.x instance and post to an endpoint listening on <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code>.</p>
+<hr class="docutils" />
+<section id="imports">
+<h2>Imports<a class="headerlink" href="#imports" title="Link to this heading">#</a></h2>
+<p>First you must import <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code>, <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code>, and the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator from the <code class="docutils literal notranslate"><span class="pre">flask-chest</span></code>package.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_chest</span> <span class="kn">import</span> <span class="n">FlaskChestCustomWriter</span><span class="p">,</span> <span class="n">FlaskChestInfluxDB</span><span class="p">,</span> <span class="n">FlaskChestSQLite</span>
+<span class="kn">from</span> <span class="nn">flask_chest.decorator</span> <span class="kn">import</span> <span class="n">flask_chest</span>
+</pre></div>
+</div>
+</section>
+<section id="flaskchestinfluxdb">
+<h2>FlaskChestInfluxDB<a class="headerlink" href="#flaskchestinfluxdb" title="Link to this heading">#</a></h2>
+<p>Then you must initialize each chest object with the necessary parameters. Our <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code> will write data points to an InfluxDB 2.x database running on <code class="docutils literal notranslate"><span class="pre">http://localhost:8086</span></code> with the provided authentication token. The data points are written to the <code class="docutils literal notranslate"><span class="pre">my-bucket</span></code> bucket in the <code class="docutils literal notranslate"><span class="pre">my-org</span></code> organization, and custom tags are added to each data point. We are also passing a global logging object, so that our logs are written to the same place as the rest of our Flask app,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">chest_influxdb</span> <span class="o">=</span> <span class="n">FlaskChestInfluxDB</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;InfluxDB&quot;</span>
     <span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://localhost:8086&quot;</span><span class="p">,</span>
     <span class="n">token</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;INFLUXDB_TOKEN&quot;</span><span class="p">),</span>
     <span class="n">org</span><span class="o">=</span><span class="s2">&quot;my-org&quot;</span><span class="p">,</span>
@@ -207,22 +220,22 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span>
-<span class="k">def</span> <span class="nf">cust_payload_generator</span><span class="p">(</span><span class="n">context_tuple_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates a data payload for the custom writer.</span>
-<span class="sd">    Args:</span>
-<span class="sd">        context_tuple_list (List[Tuple[str, Any, str]]): A list of tuples of the form</span>
-<span class="sd">        (variable_name, variable_value, request_id)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+</section>
+<section id="flaskchestcustomwriter">
+<h2>FlaskChestCustomWriter<a class="headerlink" href="#flaskchestcustomwriter" title="Link to this heading">#</a></h2>
+<p>Then we must initialize our <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> object, which will post data points to an endpoint listening on <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code>. To create an instance of <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code>, we must write a function that will return a data payload when passed the context tuple list.</p>
+<p>Here is a simple payload generator that returns a dictionary mapping the index of each 3-tuple in the list of 3-tuples, to the 3-tuple itself.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cust_payload_generator</span><span class="p">(</span><span class="n">context_tuple_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]):</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">context_tuple</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">context_tuple_list</span><span class="p">):</span>
         <span class="n">payload</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">context_tuple</span>
     <span class="k">return</span> <span class="n">payload</span>
-
-<span class="n">chest_custom_writer</span> <span class="o">=</span> <span class="n">FlaskChestCustomWriter</span><span class="p">(</span>
+</pre></div>
+</div>
+<p>We then initialize the <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> object, passing this function as the <code class="docutils literal notranslate"><span class="pre">payload_generator</span></code> parameter. This object logs all messages using the provided logger instance, does not verify the server’s TLS certificate, considers HTTP status codes <code class="docutils literal notranslate"><span class="pre">200</span></code> and <code class="docutils literal notranslate"><span class="pre">201</span></code> as success, does not send any headers or URL parameters with the POST request, does not use any proxies, uses our custom payload generator function, and posts data points to an endpoint listening on <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">chest_custom_writer</span> <span class="o">=</span> <span class="n">FlaskChestCustomWriter</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CustomWriter&quot;</span><span class="p">,</span>
     <span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://localhost:3000&quot;</span><span class="p">,</span>
-    <span class="n">headers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">payload_generator</span><span class="o">=</span><span class="n">cust_payload_generator</span><span class="p">,</span>
     <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">success_status_codes</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">],</span>
@@ -230,34 +243,50 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>The following code snippet shows how to apply the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to a Flask route. During a <code class="docutils literal notranslate"><span class="pre">GET</span></code> request, this decorator will write the variables <code class="docutils literal notranslate"><span class="pre">user_id</span></code>, <code class="docutils literal notranslate"><span class="pre">session_id</span></code>, and <code class="docutils literal notranslate"><span class="pre">total_time</span></code> to the configured chests after the route function is executed. The <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code> parameter is set to a custom function that returns a string representing the current date and time.</p>
-<section id="sample-usage">
-<h2>Sample Usage<a class="headerlink" href="#sample-usage" title="Link to this heading">#</a></h2>
-<p>The following code snippet shows how to initialize a <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> object in a Flask application. This object logs all DEBUG messages using the provided logger instance, does not verify the server’s TLS certificate, considers HTTP status codes <code class="docutils literal notranslate"><span class="pre">200</span></code> and <code class="docutils literal notranslate"><span class="pre">201</span></code> as success, does not send any headers or URL parameters with the POST request, does not use any proxies, uses a custom payload generator function, and writes data points to a custom writer running on <code class="docutils literal notranslate"><span class="pre">localhost:3000</span></code>. The data points are written to the custom writer using a custom payload generator function; in this case, the payload is a dictionary where the keys are integers and the values are tuples of the form <code class="docutils literal notranslate"><span class="pre">(variable_name,</span> <span class="pre">variable_value,</span> <span class="pre">request_id)</span></code>.</p>
+</section>
+<section id="the-flask-chest-decorator">
+<h2>The <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> Decorator<a class="headerlink" href="#the-flask-chest-decorator" title="Link to this heading">#</a></h2>
+<p>Now that the Flask Chest objects are initialized, we can apply our <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to our desired Flask route to start exporting. For this example app, lets use the following simple Flask index route,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;123&quot;</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
+        <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;321&quot;</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
+    <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator takes a dictionary mapping HTTP request methods to a list of global context variables that should be tracked during that request context. If we wanted to export the <code class="docutils literal notranslate"><span class="pre">g.total_time</span></code> for both <code class="docutils literal notranslate"><span class="pre">GET</span></code> and <code class="docutils literal notranslate"><span class="pre">POST</span></code> request methods, but only the <code class="docutils literal notranslate"><span class="pre">g.user_id</span></code> for <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests, we would define our tracked variables map as so,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">route_tracked_vars</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;GET&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;total_time&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;POST&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;total_time&quot;</span><span class="p">],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Another optional parameter we can provide the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator is a <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code>. This function will get execute every time a request is made to the route. For this example, we will use the current date and time as formatted string to distinguish requests made to the route.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_request_id_generator</span><span class="p">():</span>
     <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Define tracked global context variables</span>
-<span class="n">route_tracked_vars</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;GET&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;session_id&quot;</span><span class="p">,</span> <span class="s2">&quot;total_time&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;POST&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">],</span>
-<span class="p">}</span>
-
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>With our Flask Chest objects, our tracked variables dictionary, and our <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code> function initialized, we can now apply the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to our index route like so,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@flask_chest</span><span class="p">(</span>
     <span class="n">chests</span><span class="o">=</span><span class="p">[</span><span class="n">chest_influxdb</span><span class="p">,</span> <span class="n">chest_custom_writer</span><span class="p">],</span>
     <span class="n">tracked_vars</span><span class="o">=</span><span class="n">route_tracked_vars</span><span class="p">,</span>
     <span class="n">request_id_generator</span><span class="o">=</span><span class="n">custom_request_id_generator</span><span class="p">,</span>
-    <span class="n">raise_exceptions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
         <span class="n">g</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;123&quot;</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="s2">&quot;abc&quot;</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># Simulate a delay</span>
         <span class="n">g</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
+        <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;321&quot;</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
     <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
 </pre></div>
 </div>
@@ -312,7 +341,10 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Basic Application</a><ul>
-<li><a class="reference internal" href="#sample-usage">Sample Usage</a></li>
+<li><a class="reference internal" href="#imports">Imports</a></li>
+<li><a class="reference internal" href="#flaskchestinfluxdb">FlaskChestInfluxDB</a></li>
+<li><a class="reference internal" href="#flaskchestcustomwriter">FlaskChestCustomWriter</a></li>
+<li><a class="reference internal" href="#the-flask-chest-decorator">The <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> Decorator</a></li>
 </ul>
 </li>
 </ul>
