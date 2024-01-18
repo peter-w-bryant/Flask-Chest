@@ -15,7 +15,6 @@ Flask Chest is a Python package adding support for the automated tracking and ex
 
 </center>
 
-## Table of Contents
 - [Documentation](#documentation)
 - [Features](#features)
 - [Installation](#installation)
