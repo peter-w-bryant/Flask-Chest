@@ -1,4 +1,5 @@
-# Flask-Chest
+# Flask-Chest [![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label&color=black)](https://github.com/peter-w-bryant/Flask-Chest)
+Flask Chest is a Python package adding support for the automated tracking and exporting of [global context variables](https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data) (`g.variables`) for each request made to a Flask application.
 
 <center>
 
@@ -8,34 +9,28 @@
 
 <center>
 
-![Language](https://img.shields.io/badge/language-Python-blue.svg)
-![Version](https://img.shields.io/badge/version-0.0.10-blue.svg)
-![Framework](https://img.shields.io/badge/framework-Flask-orange.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![PyPI](https://img.shields.io/pypi/v/flask-chest)](https://pypi.org/project/flask-chest/)
+[![Framework](https://img.shields.io/badge/framework-Flask-black.svg)](https://flask.palletsprojects.com/en/3.0.x/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE)
 
 </center>
 
 ## Table of Contents
-- [Introduction](#introduction)
 - [Documentation](#documentation)
 - [Features](#features)
 - [Installation](#installation)
 - [Contributing](#contributing)
 - [License](#license)
 
-## Introduction
-
-Flask-Chest is a Python package for Flask applications, providing a decorator to track and record global context variables (`g.variables`) for each request. It interfaces with various databases to store and export these variables, serving as a tool for monitoring and analytics in Flask web applications.
-
 ## Documentation
 Documentation for the Flask-Chest project can be found [here](https://peter-w-bryant.github.io/Flask-Chest/).
 
 ## Features
-
-- Tracks and records `g.variables` in Flask routes, allowing for the storage of contextual data in a configured database.
-- Offers customizable request ID generation, ensuring unique identification of each request for better traceability and analysis of contextual data.
-- Provides support for multiple databases, including SQLite, MySQL, PostgreSQL, and MongoDB, enabling flexibility in choosing the appropriate database for the application.
-- Implements thread-safe data exporters, scheduled using AP Scheduler, to reliably and periodically export the recorded data, facilitating monitoring and analytics.
+- Provides a decorator for Flask routes, automatically exporting specific global context variables to a predefined data store.
+- Implements multiple `FlaskChest` objects, providing an abstraction layer for different databases (and other backends) using a common interface.
+- Customizable request ID generation, ensuring unique identification of global context variables generated during the same request for better traceability and analysis of contextual data.
+- Implements thread-safe data exporters, scheduled using [Flask-APScheduler](https://github.com/viniciuschiele/flask-apscheduler), to cache
+global context variables and periodically export them to configured data stores.
 
 ## Installation
 
