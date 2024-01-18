@@ -1,12 +1,31 @@
-on: [push]
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Sphinx Pages Test
     runs-on: ubuntu-latest
+
     steps:
-      - uses: seanzhengw/sphinx-pages@master
-        id: sphinx-pages
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          create_readme: true
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'  # Set this to your Python version
+
+    - name: Install Dependencies
+      run: |
+        cd docs
+        pip install -r requirements.txt
+
+    - name: Build Sphinx Documentation
+      run: |
+        cd docs
+        make html
