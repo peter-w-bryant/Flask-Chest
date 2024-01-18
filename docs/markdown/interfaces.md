@@ -1,65 +1,27 @@
-# Flask Chest Documentation
+# Interfaces
+> <b>NOTE</b> | A <b>\*</b> symbol next to a parameter indicates that the parameter is required.
 
-## Flask Chest
-Flask Chest is a Python package adding support for tracking and exporting [global context variables](https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data) (`g.variables`) for each request to Flask applications.
+## FlaskChestCustomWriter
+The `FlaskChestCustomWriter` class allows for writing key-value pairs to a custom backend by making HTTP POST requests with a custom payload. 
 
-<center>
-
-![Flask-Chest Icon](/_static/flask_chest_README.png)
-
-</center>
-
-<center>
-
-![PyPI](https://img.shields.io/pypi/v/flask-chest)
-![Framework](https://img.shields.io/badge/framework-Flask-black.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-
-</center>
-
-From the Pallets Projects' Flask documentation:
-
-> The application context is a good place to store common data during a request or CLI command. Flask provides the `g` object for this purpose. It is a simple namespace object that has the same lifetime as an application context... The `g` name stands for “global”, but that is referring to the data being global within a context. The data on g is lost after the context ends, and it is not an appropriate place to store data between requests. Use the session or a database to store data across requests. [Source](https://flask.palletsprojects.com/en/2.0.x/appcontext/#storing-data)
-
-## Features
-- Provides a decorator for Flask routes, automatically exporting specific global context variables to a predefined data store.
-- Implements multiple `FlaskChest` objects, providing an abstraction layer for different databases (and other backends) using a common interface.
-- Customizable request ID generation, ensuring unique identification of global context variables generated during the same request for better traceability and analysis of contextual data.
-- Implements thread-safe data exporters, scheduled using [Flask-APScheduler](https://github.com/viniciuschiele/flask-apscheduler), to cache
-global context variables and periodically export them to configured data stores.
-
-## Installation
-
-```bash
-pip install flask-chest
-```
-
-## Flask-Chest Interfaces
-
-### FlaskChestCustomWriter
-The `FlaskChestCustomWriter` class allows for writing key-value pairs to a custom backend by making HTTP POST requests with a custom payload.
-
-#### Default Parameter Values for FlaskChestCustomWriter
-
-| Parameter          | Default Value | Description                                                  |
+| Parameter           | Default Value | Description                                                  |
 |--------------------|---------------|--------------------------------------------------------------|
-| url                | None          | The URL of the custom writer will POST data to.              |
-| name               | url           | The name of the custom writer. Defaults to your url.         |
+| url*                | None         | The URL the custom writer will POST data to.                 |
+| payload_generator*  | None         | A function that generates the payload for the POST request (see Payload Generator Function). |
+| name               | url           | The name of the custom writer (useful for logging).          |
 | headers            | None          | HTTP headers to be sent with the POST request.               |
 | params             | None          | URL parameters to be sent with the POST request.             |
 | proxies            | None          | Proxy URLs to be used for the POST request.                  |
-| payload_generator  | None          | A function that generates the payload for the POST request (see Payload Generator Function). |
 | verify             | False         | Whether to verify the server's TLS certificate.              |
 | success_status_codes | [200]       | List of HTTP status codes considered as success.             |
-| logger             | None          | Logger instance for logging messages.                        |
+| logger             | None          | Logger instance for logging INFO, DEBUG, and ERROR messages. |
 
-
-#### Payload Generator Function
+### Payload Generator Function
 When using the `FlaskChestCustomWriter` class, a `payload_generator` function must be provided. This function is used to generate the payload for the POST request every time the `flask_chest` decorator is applied to a Flask route. This function must take a list of 3-tuples as an argument and it can return any payload (e.g. a string, a dictionary, etc.), as long as it is JSON serializable. The payload will be sent as the body of the POST request to the custom writer.
 
 Each 3-tuple in the list represents a global context variable to be written to the provided endpoint. The first element of the tuple is a string representing the name of the variable, the second element is the value of the variable, and the third element is a string representing the unique ID of the request. Thus, each 3-tuple is an object of the form `(variable_name, variable_value, request_id)`. The order of the tuples in the list is the same as the order of the variables in the `tracked_vars` parameter of the `flask_chest` decorator.
 
-#### Sample Usage
+### Sample Usage
 The following code snippet shows how to initialize a `FlaskChestCustomWriter` object in a Flask application. This object logs all DEBUG messages using the provided logger instance, does not verify the server's TLS certificate, considers HTTP status codes `200` and `201` as success, does not send any headers or URL parameters with the POST request, does not use any proxies, uses a custom payload generator function, and writes data points to a custom writer running on `localhost:3000`. The data points are written to the custom writer using a custom payload generator function; in this case, the payload is a dictionary where the keys are integers and the values are tuples of the form `(variable_name, variable_value, request_id)`.
 
 ```python
@@ -90,23 +52,21 @@ chest_custom_writer = FlaskChestCustomWriter(
 )
 ```
 
-### FlaskChestInfluxDB
+## FlaskChestInfluxDB
 The `FlaskChestInfluxDB` class is a Flask extension for storing key-value pairs in an InfluxDB database. It provides an interface to write data points to `InfluxDB 2.X` using the `influxdb-client` library.
-
-#### Default Parameter Values for FlaskChestInfluxDB
 
 | Parameter       | Default Value | Description                                                  |
 |-----------------|---------------|--------------------------------------------------------------|
-| url             | None          | The URL of the InfluxDB server.                              |
-| token           | ""            | The InfluxDB authentication token.                           |
-| org             | "my-org"      | The InfluxDB organization.                                   |
-| bucket          | "my-bucket"   | The InfluxDB bucket.                                         |
+| url*             | None          | The URL of the InfluxDB server.                              |
+| token*           | ""            | The InfluxDB authentication token.                           |
+| org*             | "my-org"      | The InfluxDB organization.                                   |
+| bucket*          | "my-bucket"   | The InfluxDB bucket.                                         |
 | custom_tags     | {}            | Custom tags to be included with each data point.             |
 | logger          | None          | Logger instance for logging messages.                        |
 
-The `custom_tags` parameter is optional and can be used to add custom tags to each data point written to InfluxDB. The `logger` parameter is also optional and allows a user to provide a custom logger instance for logging messages
+The `custom_tags` parameter is optional and can be used to add custom tags to each data point written to InfluxDB. The `logger` parameter is also optional and allows a user to provide a custom logger instance for logging messages.
 
-#### Sample Usage
+### Sample Usage
 
 The following code snippet shows how to initialize a `FlaskChestInfluxDB` object in a Flask application. This object will write data points to an InfluxDB database running on `localhost:8086` with the provided authentication token when passed as an argument to the `flask_chest` decorator. The data points are written to the `my-bucket` bucket in the `my-org` organization, and custom tags are added to each data point.
 
@@ -121,15 +81,13 @@ chest_influxdb = FlaskChestInfluxDB(
 )
 ```
 
-## The `flask_chest` Decorator
+## The flask_chest Decorator
 The `flask_chest` decorator is used to track and write specified variables to the configured backends (chests) after a Flask route function is executed.
-
-### Default Parameter Values for `flask_chest` Decorator
 
 | Parameter            | Default Value | Description                                                  |
 |----------------------|---------------|--------------------------------------------------------------|
-| chests               | None          | List of FlaskChest instances to write data to.               |
-| tracked_vars         | None          | List of variables to track and write.                        |
+| chests*               | None          | List of FlaskChest instances to write data to.               |
+| tracked_vars*         | None          | List of variables to track and write.                        |
 | request_id_generator | `lambda: str(uuid.uuid4())` | A function that generates a unique request ID.               |
 | raise_exceptions     | True          | Whether to raise exceptions if writing to a chest fails.     |
 
@@ -168,11 +126,4 @@ def index():
         time.sleep(0.1)  # Simulate a delay
         g.total_time = time.time() - g.start
     return "Hello, World!"
-
 ```
-
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. View the CONTRIBUTING file for more information.
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.

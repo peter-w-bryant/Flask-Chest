@@ -2,4 +2,6 @@
    :maxdepth: 2
    :caption: Contents:
 
-   markdown/README.md
+   Overview<markdown/index.md>
+   Install<markdown/install.md>
+   Interfaces<markdown/interfaces.md>
