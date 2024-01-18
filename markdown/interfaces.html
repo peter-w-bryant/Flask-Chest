@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="Install" href="install.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Basic Application" href="basic_app.html" /><link rel="prev" title="Install" href="install.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>Interfaces - Flask Chest</title>
@@ -159,6 +159,7 @@
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_app.html">Basic Application</a></li>
 </ul>
 
 </div>
@@ -198,9 +199,19 @@
 <blockquote>
 <div><p><b>NOTE</b> | A <b>*</b> symbol next to a parameter indicates that the parameter is required.</p>
 </div></blockquote>
+<section id="flask-chests">
+<h2>Flask Chests<a class="headerlink" href="#flask-chests" title="Link to this heading">#</a></h2>
+<p>Flask Chest objects are <u>an abstraction layer for different databases</u> (and other backends) using a common interface. They are used to store global context variables during a Flask request. Once configured, they can be passed as arguments to the <a class="reference internal" href="#the-flask-chest-decorator"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator</span></a> to write data points to the configured backend.</p>
+<p>At the time of writing, the following <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects are implemented:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestSQLite</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestMySQL</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code></p></li>
+</ul>
 <section id="flaskchestcustomwriter">
-<h2>FlaskChestCustomWriter<a class="headerlink" href="#flaskchestcustomwriter" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> class allows for writing key-value pairs to a custom backend by making HTTP POST requests with a custom payload.</p>
+<h3>FlaskChestCustomWriter<a class="headerlink" href="#flaskchestcustomwriter" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> class allows for writing to a custom backend by making HTTP POST requests with a custom payload.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -216,7 +227,7 @@
 </tr>
 <tr class="row-odd"><td><p>payload_generator*</p></td>
 <td><p>None</p></td>
-<td><p>A function that generates the payload for the POST request (see Payload Generator Function).</p></td>
+<td><p>A function that generates the payload for the POST request (see <a class="reference internal" href="#payload-generator-function"><span class="xref myst">Payload Generator Function</span></a>).</p></td>
 </tr>
 <tr class="row-even"><td><p>name</p></td>
 <td><p>url</p></td>
@@ -250,45 +261,16 @@
 </table>
 </div>
 <section id="payload-generator-function">
-<h3>Payload Generator Function<a class="headerlink" href="#payload-generator-function" title="Link to this heading">#</a></h3>
-<p>When using the <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> class, a <code class="docutils literal notranslate"><span class="pre">payload_generator</span></code> function must be provided. This function is used to generate the payload for the POST request every time the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator is applied to a Flask route. This function must take a list of 3-tuples as an argument and it can return any payload (e.g. a string, a dictionary, etc.), as long as it is JSON serializable. The payload will be sent as the body of the POST request to the custom writer.</p>
+<h4>Payload Generator Function<a class="headerlink" href="#payload-generator-function" title="Link to this heading">#</a></h4>
+<p>When using the <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> class, a <code class="docutils literal notranslate"><span class="pre">payload_generator</span></code> function must be provided. This function is used to generate the payload for the POST request every time the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator is applied to a Flask route.</p>
+<p>This function must <b>take a list of 3-tuples as an argument and it can return any payload (e.g. a string, a dictionary, etc.), as long as it is JSON serializable</b>. The payload will be sent in the body of the POST request.</p>
 <p>Each 3-tuple in the list represents a global context variable to be written to the provided endpoint. The first element of the tuple is a string representing the name of the variable, the second element is the value of the variable, and the third element is a string representing the unique ID of the request. Thus, each 3-tuple is an object of the form <code class="docutils literal notranslate"><span class="pre">(variable_name,</span> <span class="pre">variable_value,</span> <span class="pre">request_id)</span></code>. The order of the tuples in the list is the same as the order of the variables in the <code class="docutils literal notranslate"><span class="pre">tracked_vars</span></code> parameter of the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator.</p>
 </section>
-<section id="sample-usage">
-<h3>Sample Usage<a class="headerlink" href="#sample-usage" title="Link to this heading">#</a></h3>
-<p>The following code snippet shows how to initialize a <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> object in a Flask application. This object logs all DEBUG messages using the provided logger instance, does not verify the server’s TLS certificate, considers HTTP status codes <code class="docutils literal notranslate"><span class="pre">200</span></code> and <code class="docutils literal notranslate"><span class="pre">201</span></code> as success, does not send any headers or URL parameters with the POST request, does not use any proxies, uses a custom payload generator function, and writes data points to a custom writer running on <code class="docutils literal notranslate"><span class="pre">localhost:3000</span></code>. The data points are written to the custom writer using a custom payload generator function; in this case, the payload is a dictionary where the keys are integers and the values are tuples of the form <code class="docutils literal notranslate"><span class="pre">(variable_name,</span> <span class="pre">variable_value,</span> <span class="pre">request_id)</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span>
-<span class="k">def</span> <span class="nf">cust_payload_generator</span><span class="p">(</span><span class="n">context_tuple_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates a data payload for the custom writer.</span>
-<span class="sd">    Args:</span>
-<span class="sd">        context_tuple_list (List[Tuple[str, Any, str]]): A list of tuples of the form</span>
-<span class="sd">        (variable_name, variable_value, request_id)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Dict[int, Tuple[str, str, str]]: A dictionary of the form</span>
-<span class="sd">        {0: (variable_name, variable_value, request_id), 1: (variable_name, variable_value, request_id), ...}</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">context_tuple</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">context_tuple_list</span><span class="p">):</span>
-        <span class="n">payload</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">context_tuple</span>
-    <span class="k">return</span> <span class="n">payload</span>
-
-<span class="n">chest_custom_writer</span> <span class="o">=</span> <span class="n">FlaskChestCustomWriter</span><span class="p">(</span>
-    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://localhost:3000&quot;</span><span class="p">,</span>
-    <span class="n">headers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">payload_generator</span><span class="o">=</span><span class="n">cust_payload_generator</span><span class="p">,</span>
-    <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">success_status_codes</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">],</span>
-    <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
 </section>
 </section>
 <section id="flaskchestinfluxdb">
 <h2>FlaskChestInfluxDB<a class="headerlink" href="#flaskchestinfluxdb" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code> class is a Flask extension for storing key-value pairs in an InfluxDB database. It provides an interface to write data points to <code class="docutils literal notranslate"><span class="pre">InfluxDB</span> <span class="pre">2.X</span></code> using the <code class="docutils literal notranslate"><span class="pre">influxdb-client</span></code> library.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code> class allows for writing to an InfluxDB database. It provides an interface to write data points to instances of <code class="docutils literal notranslate"><span class="pre">InfluxDB</span> <span class="pre">2.X</span></code> using the <code class="docutils literal notranslate"><span class="pre">influxdb-client</span></code> library.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -326,20 +308,6 @@
 </table>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">custom_tags</span></code> parameter is optional and can be used to add custom tags to each data point written to InfluxDB. The <code class="docutils literal notranslate"><span class="pre">logger</span></code> parameter is also optional and allows a user to provide a custom logger instance for logging messages.</p>
-<section id="id1">
-<h3>Sample Usage<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
-<p>The following code snippet shows how to initialize a <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code> object in a Flask application. This object will write data points to an InfluxDB database running on <code class="docutils literal notranslate"><span class="pre">localhost:8086</span></code> with the provided authentication token when passed as an argument to the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator. The data points are written to the <code class="docutils literal notranslate"><span class="pre">my-bucket</span></code> bucket in the <code class="docutils literal notranslate"><span class="pre">my-org</span></code> organization, and custom tags are added to each data point.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">chest_influxdb</span> <span class="o">=</span> <span class="n">FlaskChestInfluxDB</span><span class="p">(</span>
-    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://localhost:8086&quot;</span><span class="p">,</span>
-    <span class="n">token</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;INFLUXDB_TOKEN&quot;</span><span class="p">),</span>
-    <span class="n">org</span><span class="o">=</span><span class="s2">&quot;my-org&quot;</span><span class="p">,</span>
-    <span class="n">bucket</span><span class="o">=</span><span class="s2">&quot;my-bucket&quot;</span><span class="p">,</span>
-    <span class="n">custom_tags</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;app&quot;</span><span class="p">:</span> <span class="s2">&quot;your-app-name&quot;</span><span class="p">},</span>
-    <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</section>
 </section>
 <section id="the-flask-chest-decorator">
 <h2>The flask_chest Decorator<a class="headerlink" href="#the-flask-chest-decorator" title="Link to this heading">#</a></h2>
@@ -359,7 +327,7 @@
 </tr>
 <tr class="row-odd"><td><p>tracked_vars*</p></td>
 <td><p>None</p></td>
-<td><p>List of variables to track and write.</p></td>
+<td><p>Dictionary mapping HTTP methods to lists of tracked variables.</p></td>
 </tr>
 <tr class="row-even"><td><p>request_id_generator</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">lambda:</span> <span class="pre">str(uuid.uuid4())</span></code></p></td>
@@ -372,40 +340,9 @@
 </tbody>
 </table>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">chests</span></code> parameter is a list of <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects that the decorator will write to. The <code class="docutils literal notranslate"><span class="pre">tracked_vars</span></code> parameter is a list of strings representing the names of the variables to track and write to the chests. If this parameter is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, all variables in <code class="docutils literal notranslate"><span class="pre">g.variables</span></code> will be tracked and written to the chests.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code> parameter is a function that should return a unique identifier for each request as a string. This ID is used to track and identify specific requests in the database, and can be used to trace the data back to the request that generated it. The default value for this parameter is a lambda function that returns a UUID4 string.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">chests</span></code> parameter is a list of <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects that the decorator will write to. The <code class="docutils literal notranslate"><span class="pre">tracked_vars</span></code> parameter is a dictionary specifying which global context variables to write to the chests per request method. If this parameter is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, all variables in <code class="docutils literal notranslate"><span class="pre">g.variables</span></code> will be tracked and written to the chests.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code> parameter is a function that should return a unique identifier for each request as a string. This ID is used to track and identify specific requests in the database, and can be used to trace the data back to the request that generated it. The default value for this parameter is a lambda function that returns a <a class="reference external" href="https://docs.python.org/3/library/uuid.html">UUID4</a> string.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">raise_exceptions</span></code> parameter is a boolean that determines whether exceptions should be raised if writing to a chest fails. If set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, exceptions will not be raised, and the decorator will continue to execute the route function.</p>
-<section id="id2">
-<h3>Sample Usage<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
-<p>The following code snippet shows how to apply the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to a Flask route. During a <code class="docutils literal notranslate"><span class="pre">GET</span></code> request, this decorator will write the variables <code class="docutils literal notranslate"><span class="pre">user_id</span></code>, <code class="docutils literal notranslate"><span class="pre">session_id</span></code>, and <code class="docutils literal notranslate"><span class="pre">total_time</span></code> to the configured chests after the route function is executed. The <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code> parameter is set to a custom function that returns a string representing the current date and time.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_request_id_generator</span><span class="p">():</span>
-    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Define tracked global context variables</span>
-<span class="n">route_tracked_vars</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;GET&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;session_id&quot;</span><span class="p">,</span> <span class="s2">&quot;total_time&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;POST&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">],</span>
-<span class="p">}</span>
-
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
-<span class="nd">@flask_chest</span><span class="p">(</span>
-    <span class="n">chests</span><span class="o">=</span><span class="p">[</span><span class="n">chest_influxdb</span><span class="p">,</span> <span class="n">chest_custom_writer</span><span class="p">],</span>
-    <span class="n">tracked_vars</span><span class="o">=</span><span class="n">route_tracked_vars</span><span class="p">,</span>
-    <span class="n">request_id_generator</span><span class="o">=</span><span class="n">custom_request_id_generator</span><span class="p">,</span>
-    <span class="n">raise_exceptions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;123&quot;</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="s2">&quot;abc&quot;</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># Simulate a delay</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
-    <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
-</pre></div>
-</div>
-</section>
 </section>
 </section>
 
@@ -414,7 +351,15 @@
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="basic_app.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Basic Application</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="install.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -457,19 +402,15 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Interfaces</a><ul>
+<li><a class="reference internal" href="#flask-chests">Flask Chests</a><ul>
 <li><a class="reference internal" href="#flaskchestcustomwriter">FlaskChestCustomWriter</a><ul>
 <li><a class="reference internal" href="#payload-generator-function">Payload Generator Function</a></li>
-<li><a class="reference internal" href="#sample-usage">Sample Usage</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#flaskchestinfluxdb">FlaskChestInfluxDB</a><ul>
-<li><a class="reference internal" href="#id1">Sample Usage</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#the-flask-chest-decorator">The flask_chest Decorator</a><ul>
-<li><a class="reference internal" href="#id2">Sample Usage</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#flaskchestinfluxdb">FlaskChestInfluxDB</a></li>
+<li><a class="reference internal" href="#the-flask-chest-decorator">The flask_chest Decorator</a></li>
 </ul>
 </li>
 </ul>

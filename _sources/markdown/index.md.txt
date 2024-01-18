@@ -1,7 +1,9 @@
 # Flask Chest Documentation
 
-## Flask Chest
+## Flask Chest [![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label&color=black)](https://github.com/peter-w-bryant/Flask-Chest)
 Flask Chest is a Python package adding support for the automated tracking and exporting of [global context variables](https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data) (`g.variables`) for each request made to a Flask application.
+
+
 
 <center>
 
@@ -36,7 +38,7 @@ pip install flask-chest
 ```
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. View the [CONTRIBUTING](https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE) file for more information.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. View the [CONTRIBUTING](https://github.com/peter-w-bryant/Flask-Chest/blob/main/CONTRIBUTING.md) file for more information.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE) file for details.
