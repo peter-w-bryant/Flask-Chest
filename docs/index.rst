@@ -2,7 +2,7 @@
    :maxdepth: 2
    :caption: Contents:
 
-   Overview<markdown/index.md>
-   Install<markdown/install.md>
-   Interfaces<markdown/interfaces.md>
-   Basic Application<markdown/basic_app.md>
+   Overview<index.md>
+   Install<install.md>
+   Interfaces<interfaces.md>
+   Basic Application<basic_app.md>

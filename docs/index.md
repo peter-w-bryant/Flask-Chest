@@ -1,3 +1,12 @@
+```{toctree}
+:maxdepth: 2
+:hidden:
+Overview<index.md>
+Install<install.md>
+Interfaces<interfaces.md>
+Basic Application<basic_app.md>
+```
+
 # Flask Chest Documentation
 
 ## Flask Chest [![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label&color=black)](https://github.com/peter-w-bryant/Flask-Chest)
