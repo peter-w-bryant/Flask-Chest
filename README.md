@@ -22,7 +22,7 @@ Flask Chest is a Python package adding support for the automated tracking and ex
 - [License](#license)
 
 ## Documentation
-Documentation for the Flask-Chest project can be found [here](https://peter-w-bryant.github.io/Flask-Chest/markdown/index.html).
+Documentation for the Flask-Chest project can be found [here](https://peter-w-bryant.github.io/Flask-Chest/).
 
 ## Features
 - Provides a decorator for Flask routes, automatically exporting specific global context variables to a predefined data store.
