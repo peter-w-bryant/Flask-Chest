@@ -32,7 +32,7 @@ extensions = [
 ]
 
 source_suffix = {
-    # '.rst': 'restructuredtext',
+    ".rst": "restructuredtext",
     ".md": "markdown",
 }
 
@@ -40,5 +40,5 @@ source_suffix = {
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "furo"
-html_title = "Flask Chest"
+html_title = "Flask-Chest"
 html_static_path = ["_static"]
