@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Flask Chest Documentation" href="markdown/index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Install" href="install.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>Flask Chest</title>
+        <title>Flask-Chest</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">Flask Chest</div></a>
+      <a href="#"><div class="brand">Flask-Chest</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
-  <span class="sidebar-brand-text">Flask Chest</span>
+  <span class="sidebar-brand-text">Flask-Chest</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -154,12 +154,11 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="markdown/index.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="markdown/install.html">Install</a></li>
-<li class="toctree-l1"><a class="reference internal" href="markdown/interfaces.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="markdown/basic_app.html">Basic Application</a></li>
+  <ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interfaces.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_app.html">Basic Application</a></li>
 </ul>
 
 </div>
@@ -195,44 +194,59 @@
         </div>
         <article role="main">
           <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="markdown/index.html">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="markdown/index.html#flask-chest">Flask Chest </a></li>
-<li class="toctree-l2"><a class="reference internal" href="markdown/index.html#features">Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markdown/index.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markdown/index.html#contributing">Contributing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markdown/index.html#license">License</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="markdown/install.html">Install</a></li>
-<li class="toctree-l1"><a class="reference internal" href="markdown/interfaces.html">Interfaces</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="markdown/interfaces.html#flask-chests">Flask Chests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markdown/interfaces.html#flaskchestinfluxdb">FlaskChestInfluxDB</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markdown/interfaces.html#the-flask-chest-decorator">The flask_chest Decorator</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="markdown/basic_app.html">Basic Application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="markdown/basic_app.html#imports">Imports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markdown/basic_app.html#flaskchestinfluxdb">FlaskChestInfluxDB</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markdown/basic_app.html#flaskchestcustomwriter">FlaskChestCustomWriter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="markdown/basic_app.html#the-flask-chest-decorator">The <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> Decorator</a></li>
-</ul>
-</li>
-</ul>
 </div>
+<section id="flask-chest">
+<h1>Flask-Chest <a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest"><img alt="Repo" src="https://badgen.net/badge/icon/GitHub?icon=github&amp;label&amp;color=black" /></a><a class="headerlink" href="#flask-chest" title="Link to this heading">#</a></h1>
+<p>Flask-Chest is a <b>Python package</b> adding support for the automated tracking and exporting of <a class="reference external" href="https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data">global context variables</a> (<code class="docutils literal notranslate"><span class="pre">g.variables</span></code>) within the <a class="reference external" href="https://flask.palletsprojects.com/en/3.0.x/reqcontext/">request context</a> of each client interaction.</p>
+<center>
+<p><img alt="Flask-Chest Icon" src="_images/flask_chest_README.png" /></p>
+</center>
+<center>
+<p><a class="reference external" href="https://flask.palletsprojects.com/en/3.0.x/"><img alt="Framework" src="https://img.shields.io/badge/framework-Flask-black.svg" /></a>
+<a class="reference external" href="https://pypi.org/project/flask-chest/"><img alt="PyPI" src="https://img.shields.io/pypi/v/flask-chest" /></a>
+<a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest" /></a>
+<a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg" /></a></p>
+</center>
+<p>From the Flask documentation by Pallets Projects:</p>
+<blockquote>
+<div><p>The application context is a good place to store common data during a request or CLI command. Flask provides the <code class="docutils literal notranslate"><span class="pre">g</span></code> object for this purpose. It is a simple namespace object that has the same lifetime as an application context… The <code class="docutils literal notranslate"><span class="pre">g</span></code> name stands for “global”, but that is referring to the data being global within a context. The data on g is lost after the context ends, and it is not an appropriate place to store data between requests. Use the session or a database to store data across requests. <a class="reference external" href="https://flask.palletsprojects.com/en/2.0.x/appcontext/#storing-data">Source</a></p>
+</div></blockquote>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Implements multiple <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects, providing an <u>abstraction layer for different databases (and other backends)</u> using a simple/minimal interface.</p></li>
+<li><p>Provides the <code class="docutils literal notranslate"><span class="pre">&#64;flask_chest</span></code> decorator for view functions, <u>automatically exporting global context variables</u> to your configured data store.</p></li>
+<li><p>Customizable request ID generation, enabling the <u>identification and aggregation of context data generated during the same request</u> context.</p></li>
+<li><p>Implements thread-safe data exporters, scheduled using <a class="reference external" href="https://github.com/viniciuschiele/flask-apscheduler">Flask-APScheduler</a>, to <u>cache context data and periodically export it</u>.</p></li>
+</ul>
+</section>
+<section id="installation">
+<h2>Installation <a class="reference external" href="https://pypi.org/project/flask-chest/"><img alt="PyPI" src="https://img.shields.io/pypi/v/flask-chest" /></a><a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>flask-chest
+</pre></div>
+</div>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">#</a></h2>
+<p>Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. View the <a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest/blob/main/CONTRIBUTING.md">CONTRIBUTING</a> file for more information.</p>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Link to this heading">#</a></h2>
+<p>This project is licensed under the MIT License - see the <a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE">LICENSE</a> file for details.</p>
+</section>
+</section>
 
         </article>
       </div>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="markdown/index.html">
+          <a class="next-page" href="install.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Flask Chest Documentation</div>
+                <div class="title">Install </div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
