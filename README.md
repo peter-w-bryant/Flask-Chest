@@ -25,11 +25,10 @@ Flask Chest is a Python package adding support for the automated tracking and ex
 Documentation for the Flask-Chest project can be found [here](https://peter-w-bryant.github.io/Flask-Chest/).
 
 ## Features
-- Provides a decorator for Flask routes, automatically exporting specific global context variables to a predefined data store.
-- Implements multiple `FlaskChest` objects, providing an abstraction layer for different databases (and other backends) using a common interface.
-- Customizable request ID generation, ensuring unique identification of global context variables generated during the same request for better traceability and analysis of contextual data.
-- Implements thread-safe data exporters, scheduled using [Flask-APScheduler](https://github.com/viniciuschiele/flask-apscheduler), to cache
-global context variables and periodically export them to configured data stores.
+- Implements multiple `FlaskChest` objects, providing an <u>abstraction layer for different databases (and other backends)</u> using a simple/minimal interface.
+- Provides the `@flask_chest` decorator for view functions, <u>automatically exporting global context variables</u> to your configured data store.
+- Customizable request ID generation, enabling the <u>identification and aggregation of context data generated during the same request</u> context.
+- Implements thread-safe data exporters, scheduled using [Flask-APScheduler](https://github.com/viniciuschiele/flask-apscheduler), to <u>cache context data and periodically export it</u>.
 
 ## Installation
 
