@@ -1,5 +1,6 @@
-# Interfaces
-> <b>NOTE</b> | A <b>\*</b> symbol next to a parameter indicates that the parameter is required.
+# Interfaces [![GitHub Issues](https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest)](https://github.com/peter-w-bryant/Flask-Chest/issues)
+
+> &#128204; Last updated : 2024-1-24 
 
 ## Flask Chests
 Flask Chest objects are <u>an abstraction layer for different databases</u> (and other backends) using a common interface. They are used to store global context variables during a Flask request. Once configured, they can be passed as arguments to the [`flask_chest` decorator](#the-flask-chest-decorator) to write data points to the configured backend.
