@@ -1,20 +1,28 @@
+> &#128204; Last updated : 2024-1-24 
 # Interfaces [![GitHub Issues](https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest)](https://github.com/peter-w-bryant/Flask-Chest/issues)
 
-> &#128204; Last updated : 2024-1-24 
+- [Flask Chests](#flask-chests)
+  - [FlaskChestCustomWriter](#flaskchestcustomwriter)
+    - [Payload Generator Function](#payload-generator-function)
+  - [FlaskChestInfluxDB](#flaskchestinfluxdb)
+- [The flask_chest Decorator](#the-flask_chest-decorator)
+
+---
 
 ## Flask Chests
-Flask Chest objects are <u>an abstraction layer for different databases</u> (and other backends) using a common interface. They are used to store global context variables during a Flask request. Once configured, they can be passed as arguments to the [`flask_chest` decorator](#the-flask-chest-decorator) to write data points to the configured backend.
+`FlaskChest` objects are <u>an abstraction layer for different databases</u> (and other backends). Once initialized, they can be passed as arguments to the [`flask_chest` decorator](#the-flask-chest-decorator) to write data to their respective backends.
 
 At the time of writing, the following `FlaskChest` objects are implemented:
+- [`FlaskChestCustomWriter`](#flaskchestcustomwriter)
+- [`FlaskChestInfluxDB`](#flaskchestinfluxdb)
+- [`FlaskChestPrometheus`](#flaskchestprometheus)
 - `FlaskChestSQLite`
 - `FlaskChestMySQL`
-- `FlaskChestInfluxDB`
-- `FlaskChestCustomWriter`
 
 ### FlaskChestCustomWriter
 The `FlaskChestCustomWriter` class allows for writing to a custom backend by making HTTP POST requests with a custom payload. 
 
-| Parameter           | Default Value | Description                                                  |
+| Parameter (*=required)           | Default Value | Description                                                  |
 |--------------------|---------------|--------------------------------------------------------------|
 | url*                | None         | The URL the custom writer will POST data to.                 |
 | payload_generator*  | None         | A function that generates the payload for the POST request (see [Payload Generator Function](#payload-generator-function)). |
@@ -27,11 +35,14 @@ The `FlaskChestCustomWriter` class allows for writing to a custom backend by mak
 | logger             | None          | Logger instance for logging INFO, DEBUG, and ERROR messages. |
 
 #### Payload Generator Function
-When using the `FlaskChestCustomWriter` class, a `payload_generator` function must be provided. This function is used to generate the payload for the POST request every time the `flask_chest` decorator is applied to a Flask route. 
+```python
+def payload_generator(variables: List[Tuple[str, Any, str]]) -> Any:
+```
+When using the `FlaskChestCustomWriter` class, a payload generator function must be provided, but <i>can be named anything</i>. This function is used to <b>generate the JSON body for the POST request</b> every time the `flask_chest` decorator is applied to a Flask route.
 
-This function must <b>take a list of 3-tuples as an argument and it can return any payload (e.g. a string, a dictionary, etc.), as long as it is JSON serializable</b>. The payload will be sent in the body of the POST request.
-
-Each 3-tuple in the list represents a global context variable to be written to the provided endpoint. The first element of the tuple is a string representing the name of the variable, the second element is the value of the variable, and the third element is a string representing the unique ID of the request. Thus, each 3-tuple is an object of the form `(variable_name, variable_value, request_id)`. The order of the tuples in the list is the same as the order of the variables in the `tracked_vars` parameter of the `flask_chest` decorator.
+This function must implement the following interface:
+- It must take a list of 3-tuples as an argument. Each 3-tuple is a global context variable of the form `(variable_name, variable_value, request_id)`. The order of the tuples in the list is the same as the order of the variables in the `tracked_vars` parameter of the [`flask_chest`](#the-flask_chest-decorator) decorator.
+- It must return a JSON serializable payload (e.g. a string, a dictionary, etc.).
 
 ## FlaskChestInfluxDB
 The `FlaskChestInfluxDB` class allows for writing to an InfluxDB database. It provides an interface to write data points to instances of `InfluxDB 2.X` using the `influxdb-client` library.
