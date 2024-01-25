@@ -5,7 +5,7 @@
   - [FlaskChestCustomWriter](#flaskchestcustomwriter)
     - [Payload Generator Function](#payload-generator-function)
   - [FlaskChestInfluxDB](#flaskchestinfluxdb)
-- [The flask_chest Decorator](#the-flask_chest-decorator)
+- [The flask_chest Decorator](#the-flask-chest-decorator)
 
 ---
 
