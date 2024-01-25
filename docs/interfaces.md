@@ -58,6 +58,8 @@ The `FlaskChestInfluxDB` class allows for writing to an InfluxDB database. It pr
 
 The `custom_tags` parameter is optional and can be used to add custom tags to each data point written to InfluxDB. The `logger` parameter is also optional and allows a user to provide a custom logger instance for logging messages.
 
+---
+
 ## The flask_chest Decorator
 The `flask_chest` decorator is used to track and write specified variables to the configured backends (chests) after a Flask route function is executed.
 
