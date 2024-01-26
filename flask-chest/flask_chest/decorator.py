@@ -12,7 +12,7 @@ from flask_chest import FlaskChest
 
 def flask_chest(
     chests: List[FlaskChest],
-    tracked_vars: List[str],
+    tracked_vars: List[str] = None,
     request_id_generator=None,
     raise_exceptions: bool = True,
 ):
@@ -32,31 +32,43 @@ def flask_chest(
 def write_tracked_variables(
     chests: List[FlaskChest], tracked_vars: List[str], raise_exceptions: bool
 ) -> None:
-    # Write tracked variables to each chest
+    """Write the tracked variables to each FlaskChest instance. If no tracked variables are provided,
+    write all
+    """
     for chest in chests:
+        # Coalesce request_id to None if it doesn't exist
         request_id = getattr(g, "custom_request_id", None)
-        # Write tracked variables to database
+
+        # If no tracked_vars dict is provided, write all global context vars
+        if tracked_vars is None:
+            try:
+                context_tuple_list = []
+                for attr in dir(g):
+                    if not attr.startswith("__"):
+                        value = getattr(g, attr)
+                        context_tuple_list.append((attr, value, request_id))
+                chest.write(context_tuple_list)
+            except Exception as e:
+                if raise_exceptions:
+                    raise e
+            continue
+        # For each request method in the tracked_vars dictionary
         for request_method, context_vars in tracked_vars.items():
             if request.method == request_method.upper():
                 # For each global context var in the list of tracked vars
                 context_tuple_list = []
                 for var_name in context_vars:
+                    # If the global context var exists, add it to the list of tuples
                     if hasattr(g, var_name):
                         value = getattr(g, var_name)
                         context_tuple_list.append((var_name, value, request_id))
-                if raise_exceptions:
-                    try:
-                        # Generic write for all chest types
-                        chest.write(context_tuple_list)
-                    except Exception as e:
+
+                # Attempt generic write of the list of tuples to the chest
+                try:
+                    chest.write(context_tuple_list)
+                except Exception as e:
+                    if raise_exceptions:
                         raise e
-                else:
-                    try:
-                        # Generic write for all chest types
-                        chest.write(context_tuple_list)
-                    except Exception as e:
-                        if chest.logger:
-                            chest.logger.debug(e)
 
 
 def set_custom_request_id(request_id_generator):

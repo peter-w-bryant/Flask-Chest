@@ -12,10 +12,10 @@ if os.path.isfile(requirements):
 
 setuptools.setup(
     name="flask-chest",
-    version="0.0.10",
+    version="0.0.11",
     author="Peter Bryant",
     author_email="peter.bryant@gatech.edu",
-    description="A Python package for Flask applications, providing a decorator to track and record global context variables (g.variables) for each request.",
+    description="Flask Chest is a Python package adding support for the automated tracking and exporting of global context variables (`g.variables`) for each request made to a Flask application.",
     packages=setuptools.find_packages(),
     install_requires=package_dependency_list,
     classifiers=[
