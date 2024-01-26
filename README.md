@@ -1,29 +1,25 @@
 # Flask-Chest
 Flask Chest is a Python package adding support for the automated tracking and exporting of [global context variables](https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data) (`g.variables`) for each request made to a Flask application.
 
-<center>
 
-![Flask-Chest Icon](/images/flask_chest_README.png)
-
-</center>
-
-<center>
+<!-- ![Flask-Chest Icon](/images/flask_chest_README.png) -->
+<div align="center">
+    <img src="images/flask_chest_README.png" alt="logo"/>
+</div>
 
 <p align="center">
-    <a href="https://pypi.org/project/flask-chest/">
+    <a href="https://pypi.org/project/flask-chest/" style="text-decoration: none;">
         <img src="https://img.shields.io/pypi/v/flask-chest" alt="PyPI"/>
     </a>
     <img src="https://github.com/peter-w-bryant/Flask-Chest/actions/workflows/tests.yml/badge.svg" alt="Tests"/>
     <img src="https://codecov.io/gh/peter-w-bryant/Flask-Chest/branch/main/graph/badge.svg" alt="codecov"/>
-    <a href="https://github.com/peter-w-bryant/Flask-Chest/issues">
+    <a href="https://github.com/peter-w-bryant/Flask-Chest/issues" style="text-decoration: none;">
         <img src="https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest" alt="GitHub Issues"/>
     </a>
-    <a href="https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE">
+    <a href="https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE" style="text-decoration: none;">
         <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License"/>
     </a>
 </p>
-
-</center>
 
 - [Documentation](#documentation)
 - [Features](#features)
