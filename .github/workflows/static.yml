@@ -22,9 +22,6 @@ jobs:
 
     - name: Run Specific Test
       run: |
-        
-        pwd
-        cd testing
         python -m unittest testing
 
   build-and-deploy:
