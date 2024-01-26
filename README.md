@@ -9,12 +9,19 @@ Flask Chest is a Python package adding support for the automated tracking and ex
 
 <center>
 
-[![PyPI](https://img.shields.io/pypi/v/flask-chest)](https://pypi.org/project/flask-chest/)
-![Tests](https://github.com/peter-w-bryant/Flask-Chest/actions/workflows/tests.yml/badge.svg)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE)
-![codecov](https://codecov.io/gh/peter-w-bryant/Flask-Chest/branch/main/graph/badge.svg)
-[![GitHub Issues](https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest)](https://github.com/peter-w-bryant/Flask-Chest/issues)
-
+<p align="center">
+    <a href="https://pypi.org/project/flask-chest/">
+        <img src="https://img.shields.io/pypi/v/flask-chest" alt="PyPI"/>
+    </a>
+    <img src="https://github.com/peter-w-bryant/Flask-Chest/actions/workflows/tests.yml/badge.svg" alt="Tests"/>
+    <img src="https://codecov.io/gh/peter-w-bryant/Flask-Chest/branch/main/graph/badge.svg" alt="codecov"/>
+    <a href="https://github.com/peter-w-bryant/Flask-Chest/issues">
+        <img src="https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest" alt="GitHub Issues"/>
+    </a>
+    <a href="https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE">
+        <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License"/>
+    </a>
+</p>
 
 </center>
 
