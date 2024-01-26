@@ -11,8 +11,9 @@ Flask Chest is a Python package adding support for the automated tracking and ex
 
 [![PyPI](https://img.shields.io/pypi/v/flask-chest)](https://pypi.org/project/flask-chest/)
 ![Tests](https://github.com/peter-w-bryant/Flask-Chest/actions/workflows/tests.yml/badge.svg)
-<!-- ![codecov](https://codecov.io/gh/peter-w-bryant/Flask-Chest/branch/main/graph/badge.svg) -->
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE)
+<!-- ![codecov](https://codecov.io/gh/peter-w-bryant/Flask-Chest/branch/main/graph/badge.svg) -->
+
 
 </center>
 
