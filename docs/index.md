@@ -10,9 +10,11 @@ Basic Application<basic_app.md>
 # Flask-Chest [![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label&color=black)](https://github.com/peter-w-bryant/Flask-Chest)
 Flask-Chest is a <b>Python package</b> adding support for the automated tracking and exporting of [global context variables](https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data) (`g.variables`) within the [request context](https://flask.palletsprojects.com/en/3.0.x/reqcontext/) of each client interaction.
 
-<div align="center">
-    <img src="images/flask_chest_README.png" alt="logo"/>
-</div>
+<center>
+
+![Flask-Chest Icon](/images/flask_chest_README.png)
+
+</center>
 
 <p align="center">
     <a href="https://pypi.org/project/flask-chest/" style="text-decoration: none; border-bottom: none;"><img src="https://img.shields.io/pypi/v/flask-chest" alt="PyPI"/></a>
