@@ -12,7 +12,7 @@ Flask-Chest is a <b>Python package</b> adding support for the automated tracking
 
 <center>
 
-![Flask-Chest Icon](/images/flask_chest_README.png)
+![Flask-Chest Icon](/_static/flask_chest_README.png)
 
 </center>
 
