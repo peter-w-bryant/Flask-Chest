@@ -24,7 +24,6 @@ jobs:
       run: |
         cd testing
         python -m unittest testing
-        echo "Test Complete"
 
   build-and-deploy:
     needs: run-tests
