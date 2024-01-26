@@ -1,4 +1,4 @@
-name: Build and Test
+name: Docs
 
 on:
   push:
@@ -8,30 +8,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-tests:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
-    - name: Run Specific Test
-      run: |
-        python -m unittest testing
-
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v3
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        flags: unittests
-        name: codecov-umbrella
-
-
   build-and-deploy:
     needs: run-tests
     runs-on: ubuntu-latest
