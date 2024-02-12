@@ -6,7 +6,7 @@
     - [Payload Generator Function](#payload-generator-function)
   - [FlaskChestInfluxDB](#flaskchestinfluxdb)
     - [Specifying Custom Tags](#specifying-custom-tags)
-- [`flask_chest` Decorator](#flask_chest-decorator)
+- [`flask_chest` Decorator](#flask-chest-decorator)
     - [Request ID Generator](#request-id-generator)
     - [Exception Handling](#exception-handling)
 
