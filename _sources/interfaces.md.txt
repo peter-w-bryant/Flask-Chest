@@ -13,7 +13,7 @@
 ---
 
 ## Flask-Chest Objects
-`FlaskChest` objects are <u>an abstraction layer for different databases</u> (and other backends). Once initialized, they can be passed as arguments to the [`flask_chest` decorator](#the-flask-chest-decorator) to write data to their respective backends.
+`FlaskChest` objects are <u>an abstraction layer for different databases</u> (and other backends). Once initialized, they can be passed as arguments to the [`flask_chest` decorator](#flask-chest-decorator) to write data to their respective backends.
 
 At the time of writing, the following `FlaskChest` objects are implemented:
 - [`FlaskChestCustomWriter`](#flaskchestcustomwriter)
