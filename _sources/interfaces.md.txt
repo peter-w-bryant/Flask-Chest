@@ -65,7 +65,9 @@ The `custom_tags` parameter is optional and can be used to add custom tags to ea
 ---
 
 ## `flask_chest` Decorator
-The `flask_chest` decorator is used to track and write specified context variables to the configured backends (Flask-Chest objects) after a Flask function view function is executed. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#the-flask-chest-decorator).
+The `flask_chest` decorator is used to track and write specified context variables to the backends specified in the `chests` parameter. It can be applied to any Flask route, and will write data points to the specified backends every time the route is accessed. Each `FlaskChest` object passed to the `chests` parameter will receive the same data points. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#the-flask-chest-decorator).
+
+```python
 
 | Parameter            | Default Value | Description                                                  |
 |----------------------|---------------|--------------------------------------------------------------|
