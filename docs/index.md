@@ -41,7 +41,7 @@ From the Flask documentation by Pallets Projects:
 ```bash
 pip install flask-chest
 ```
-## Simple Diagram
+## Usage Diagram
 ![Flask-Chest Simple Diagram](/_static/flask_chest_simple_diagram.png)
 
 ## Contributing
