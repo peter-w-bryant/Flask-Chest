@@ -24,8 +24,6 @@ Flask-Chest is a <b>Python package</b> adding support for the automated tracking
     <a href="https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE" style="text-decoration: none; border-bottom: none;"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License"/></a>
 </p>
 
-![Flask-Chest Simple Diagram](/_static/flask_chest_simple_diagram.png)
-
 
 From the Flask documentation by Pallets Projects:
 
@@ -43,6 +41,8 @@ From the Flask documentation by Pallets Projects:
 ```bash
 pip install flask-chest
 ```
+## Simple Diagram
+![Flask-Chest Simple Diagram](/_static/flask_chest_simple_diagram.png)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. View the [CONTRIBUTING](https://github.com/peter-w-bryant/Flask-Chest/blob/main/CONTRIBUTING.md) file for more information.
