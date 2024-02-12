@@ -16,6 +16,8 @@ Flask-Chest is a <b>Python package</b> adding support for the automated tracking
 
 </center>
 
+![Flask-Chest Simple Diagram](/_static/flask_chest_simple_diagram.png)
+
 <p align="center">
     <a href="https://pypi.org/project/flask-chest/" style="text-decoration: none; border-bottom: none;"><img src="https://img.shields.io/pypi/v/flask-chest" alt="PyPI"/></a>
     <img src="https://github.com/peter-w-bryant/Flask-Chest/actions/workflows/tests.yml/badge.svg" alt="Tests"/>
