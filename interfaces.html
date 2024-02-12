@@ -206,10 +206,19 @@
 <li><p><a class="reference internal" href="#payload-generator-function"><span class="xref myst">Payload Generator Function</span></a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#flaskchestinfluxdb"><span class="xref myst">FlaskChestInfluxDB</span></a></p></li>
+<li><p><a class="reference internal" href="#flaskchestinfluxdb"><span class="xref myst">FlaskChestInfluxDB</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#specifying-custom-tags"><span class="xref myst">Specifying Custom Tags</span></a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#the-flask-chest-decorator"><span class="xref myst">The flask_chest Decorator</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#flask_chest-decorator"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> Decorator</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#request-id-generator"><span class="xref myst">Request ID Generator</span></a></p></li>
+<li><p><a class="reference internal" href="#exception-handling"><span class="xref myst">Exception Handling</span></a></p></li>
+</ul>
+</li>
 </ul>
 <hr class="docutils" />
 <section id="flask-chests">
@@ -279,7 +288,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">payload_generator</span><span class="p">(</span><span class="n">variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 </pre></div>
 </div>
-<p>When using the <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> class, a payload generator function must be provided, but <i>can be named anything</i>. This function is used to <b>generate the JSON body for the POST request</b> every time the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator is applied to a Flask route.</p>
+<p>When using the <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> class, a payload generator function must be provided, but <i>can be named anything</i>. This function is used to <b>generate the JSON body for the POST request</b> every time the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator is applied to a Flask route. <a class="reference external" href="https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestcustomwriter">Example usage</a>.</p>
 <p>This function must implement the following interface:</p>
 <ul class="simple">
 <li><p>It must take a list of 3-tuples as an argument. Each 3-tuple is a global context variable of the form <code class="docutils literal notranslate"><span class="pre">(variable_name,</span> <span class="pre">variable_value,</span> <span class="pre">request_id)</span></code>. The order of the tuples in the list is the same as the order of the variables in the <code class="docutils literal notranslate"><span class="pre">tracked_vars</span></code> parameter of the <a class="reference internal" href="#the-flask_chest-decorator"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code></span></a> decorator.</p></li>
@@ -327,12 +336,15 @@
 </tbody>
 </table>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">custom_tags</span></code> parameter is optional and can be used to add custom tags to each data point written to InfluxDB. The <code class="docutils literal notranslate"><span class="pre">logger</span></code> parameter is also optional and allows a user to provide a custom logger instance for logging messages.</p>
+<section id="specifying-custom-tags">
+<h3>Specifying Custom Tags<a class="headerlink" href="#specifying-custom-tags" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">custom_tags</span></code> parameter is optional and can be used to add custom tags to each data point written to InfluxDB. The <code class="docutils literal notranslate"><span class="pre">logger</span></code> parameter is also optional and allows a user to provide a custom logger instance for logging messages. <a class="reference external" href="https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestinfluxdb">Example usage</a>.</p>
+</section>
 </section>
 <hr class="docutils" />
-<section id="the-flask-chest-decorator">
-<h2>The flask_chest Decorator<a class="headerlink" href="#the-flask-chest-decorator" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator is used to track and write specified variables to the configured backends (chests) after a Flask route function is executed.</p>
+<section id="flask-chest-decorator">
+<h2><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> Decorator<a class="headerlink" href="#flask-chest-decorator" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator is used to track and write specified context variables to the configured backends (Flask-Chest objects) after a Flask function view function is executed. <a class="reference external" href="https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#the-flask-chest-decorator">Example usage</a>.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -344,7 +356,7 @@
 <tbody>
 <tr class="row-even"><td><p>chests*</p></td>
 <td><p>None</p></td>
-<td><p>List of FlaskChest instances to write data to.</p></td>
+<td><p>List of Flask-Chest instances to write data to.</p></td>
 </tr>
 <tr class="row-odd"><td><p>tracked_vars*</p></td>
 <td><p>None</p></td>
@@ -362,8 +374,14 @@
 </table>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">chests</span></code> parameter is a list of <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects that the decorator will write to. The <code class="docutils literal notranslate"><span class="pre">tracked_vars</span></code> parameter is a dictionary specifying which global context variables to write to the chests per request method. If this parameter is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, all variables in <code class="docutils literal notranslate"><span class="pre">g.variables</span></code> will be tracked and written to the chests.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code> parameter is a function that should return a unique identifier for each request as a string. This ID is used to track and identify specific requests in the database, and can be used to trace the data back to the request that generated it. The default value for this parameter is a lambda function that returns a <a class="reference external" href="https://docs.python.org/3/library/uuid.html">UUID4</a> string.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">raise_exceptions</span></code> parameter is a boolean that determines whether exceptions should be raised if writing to a chest fails. If set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, exceptions will not be raised, and the decorator will continue to execute the route function.</p>
+<section id="request-id-generator">
+<h3>Request ID Generator<a class="headerlink" href="#request-id-generator" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code> parameter is a function that should <u>return a unique identifier for each request as a string</u>. This ID is used to track and identify specific requests in the database, and can be used to trace the data back to the request that generated it. The default value for this parameter is a lambda function that returns a <a class="reference external" href="https://docs.python.org/3/library/uuid.html">UUID4</a> string. <a class="reference external" href="https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#the-flask-chest-decorator">Example usage</a>.</p>
+</section>
+<section id="exception-handling">
+<h3>Exception Handling<a class="headerlink" href="#exception-handling" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">raise_exceptions</span></code> parameter is a <u>boolean that determines whether exceptions should be raised if writing to a chest fails</u>. If set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, exceptions will not be raised, and the decorator will continue to execute the view function even if writing to a chest fails. If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, exceptions will be raised if writing to a chest fails, and the view function will not be executed.</p>
+</section>
 </section>
 </section>
 
@@ -430,8 +448,15 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#flaskchestinfluxdb">FlaskChestInfluxDB</a></li>
-<li><a class="reference internal" href="#the-flask-chest-decorator">The flask_chest Decorator</a></li>
+<li><a class="reference internal" href="#flaskchestinfluxdb">FlaskChestInfluxDB</a><ul>
+<li><a class="reference internal" href="#specifying-custom-tags">Specifying Custom Tags</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#flask-chest-decorator"><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> Decorator</a><ul>
+<li><a class="reference internal" href="#request-id-generator">Request ID Generator</a></li>
+<li><a class="reference internal" href="#exception-handling">Exception Handling</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
