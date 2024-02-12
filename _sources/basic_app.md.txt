@@ -1,5 +1,11 @@
 # Basic Application
-Below is an example of a basic Flask route that uses the `flask_chest` decorator to write to both an InfluxDB 2.x instance and post to an endpoint listening on `http://localhost:3000`.
+Below is an example of a basic Flask route that uses the `flask_chest` decorator to write to both an <u>InfluxDB 2.x instance</u> and an <u>API listening on `http://localhost:3000` for POST requests</u>.
+
+This example uses the following Flask Chest objects:
+- `FlaskChestInfluxDB`
+- `FlaskChestCustomWriter`
+
+As well as the `flask_chest` decorator to track global context variables and write data points to the specified backends.
 
 ---
 
@@ -7,7 +13,7 @@ Below is an example of a basic Flask route that uses the `flask_chest` decorator
 First you must import `FlaskChestInfluxDB`, `FlaskChestCustomWriter`, and the `flask_chest` decorator from the `flask-chest`package.
 
 ```python
-from flask_chest import FlaskChestCustomWriter, FlaskChestInfluxDB, FlaskChestSQLite
+from flask_chest import FlaskChestCustomWriter, FlaskChestInfluxDB
 from flask_chest.decorator import flask_chest
 ```
 

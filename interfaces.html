@@ -194,12 +194,12 @@
         </div>
         <article role="main">
           <blockquote>
-<div><p>📌 Last updated : 2024-1-24</p>
+<div><p>📌 Last updated : 2024-2-11</p>
 </div></blockquote>
 <section id="interfaces">
 <h1>Interfaces <a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest" /></a><a class="headerlink" href="#interfaces" title="Link to this heading">#</a></h1>
 <ul class="simple">
-<li><p><a class="reference internal" href="#flask-chests"><span class="xref myst">Flask Chests</span></a></p>
+<li><p><a class="reference internal" href="#flask-chest-objects"><span class="xref myst">Flask-Chest Objects</span></a></p>
 <ul>
 <li><p><a class="reference internal" href="#flaskchestcustomwriter"><span class="xref myst">FlaskChestCustomWriter</span></a></p>
 <ul>
@@ -221,8 +221,8 @@
 </li>
 </ul>
 <hr class="docutils" />
-<section id="flask-chests">
-<h2>Flask Chests<a class="headerlink" href="#flask-chests" title="Link to this heading">#</a></h2>
+<section id="flask-chest-objects">
+<h2>Flask-Chest Objects<a class="headerlink" href="#flask-chest-objects" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects are <u>an abstraction layer for different databases</u> (and other backends). Once initialized, they can be passed as arguments to the <a class="reference internal" href="#the-flask-chest-decorator"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator</span></a> to write data to their respective backends.</p>
 <p>At the time of writing, the following <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects are implemented:</p>
 <ul class="simple">
@@ -234,7 +234,7 @@
 </ul>
 <section id="flaskchestcustomwriter">
 <h3>FlaskChestCustomWriter<a class="headerlink" href="#flaskchestcustomwriter" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> class allows for writing to a custom backend by making HTTP POST requests with a custom payload.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> class allows for writing to a custom backend by making HTTP POST requests with a custom payload. It provides an interface to write data to any backend that can accept HTTP POST requests. <a class="reference external" href="https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestcustomwriter">Example usage</a>.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -299,7 +299,7 @@
 </section>
 <section id="flaskchestinfluxdb">
 <h2>FlaskChestInfluxDB<a class="headerlink" href="#flaskchestinfluxdb" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code> class allows for writing to an InfluxDB database. It provides an interface to write data points to instances of <code class="docutils literal notranslate"><span class="pre">InfluxDB</span> <span class="pre">2.X</span></code> using the <code class="docutils literal notranslate"><span class="pre">influxdb-client</span></code> library.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code> class allows for writing to an InfluxDB database. It provides an interface to write data points to instances of <code class="docutils literal notranslate"><span class="pre">InfluxDB</span> <span class="pre">2.X</span></code> using the <code class="docutils literal notranslate"><span class="pre">influxdb-client</span></code> library. <a class="reference external" href="https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestinfluxdb">Example usage</a>.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -441,7 +441,7 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Interfaces </a><ul>
-<li><a class="reference internal" href="#flask-chests">Flask Chests</a><ul>
+<li><a class="reference internal" href="#flask-chest-objects">Flask-Chest Objects</a><ul>
 <li><a class="reference internal" href="#flaskchestcustomwriter">FlaskChestCustomWriter</a><ul>
 <li><a class="reference internal" href="#payload-generator-function">Payload Generator Function</a></li>
 </ul>

@@ -195,12 +195,18 @@
         <article role="main">
           <section id="basic-application">
 <h1>Basic Application<a class="headerlink" href="#basic-application" title="Link to this heading">#</a></h1>
-<p>Below is an example of a basic Flask route that uses the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to write to both an InfluxDB 2.x instance and post to an endpoint listening on <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code>.</p>
+<p>Below is an example of a basic Flask route that uses the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to write to both an <u>InfluxDB 2.x instance</u> and an <u>API listening on <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code> for POST requests</u>.</p>
+<p>This example uses the following Flask Chest objects:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code></p></li>
+</ul>
+<p>As well as the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to track global context variables and write data points to the specified backends.</p>
 <hr class="docutils" />
 <section id="imports">
 <h2>Imports<a class="headerlink" href="#imports" title="Link to this heading">#</a></h2>
 <p>First you must import <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code>, <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code>, and the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator from the <code class="docutils literal notranslate"><span class="pre">flask-chest</span></code>package.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_chest</span> <span class="kn">import</span> <span class="n">FlaskChestCustomWriter</span><span class="p">,</span> <span class="n">FlaskChestInfluxDB</span><span class="p">,</span> <span class="n">FlaskChestSQLite</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_chest</span> <span class="kn">import</span> <span class="n">FlaskChestCustomWriter</span><span class="p">,</span> <span class="n">FlaskChestInfluxDB</span>
 <span class="kn">from</span> <span class="nn">flask_chest.decorator</span> <span class="kn">import</span> <span class="n">flask_chest</span>
 </pre></div>
 </div>

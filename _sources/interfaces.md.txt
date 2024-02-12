@@ -1,7 +1,7 @@
-> &#128204; Last updated : 2024-1-24 
+> &#128204; Last updated : 2024-2-11 
 # Interfaces [![GitHub Issues](https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest)](https://github.com/peter-w-bryant/Flask-Chest/issues)
 
-- [Flask Chests](#flask-chests)
+- [Flask-Chest Objects](#flask-chest-objects)
   - [FlaskChestCustomWriter](#flaskchestcustomwriter)
     - [Payload Generator Function](#payload-generator-function)
   - [FlaskChestInfluxDB](#flaskchestinfluxdb)
@@ -12,7 +12,7 @@
 
 ---
 
-## Flask Chests
+## Flask-Chest Objects
 `FlaskChest` objects are <u>an abstraction layer for different databases</u> (and other backends). Once initialized, they can be passed as arguments to the [`flask_chest` decorator](#the-flask-chest-decorator) to write data to their respective backends.
 
 At the time of writing, the following `FlaskChest` objects are implemented:
@@ -23,7 +23,7 @@ At the time of writing, the following `FlaskChest` objects are implemented:
 - `FlaskChestMySQL`
 
 ### FlaskChestCustomWriter
-The `FlaskChestCustomWriter` class allows for writing to a custom backend by making HTTP POST requests with a custom payload. 
+The `FlaskChestCustomWriter` class allows for writing to a custom backend by making HTTP POST requests with a custom payload. It provides an interface to write data to any backend that can accept HTTP POST requests. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestcustomwriter).
 
 | Parameter (*=required)           | Default Value | Description                                                  |
 |--------------------|---------------|--------------------------------------------------------------|
@@ -48,7 +48,7 @@ This function must implement the following interface:
 - It must return a JSON serializable payload (e.g. a string, a dictionary, etc.).
 
 ## FlaskChestInfluxDB
-The `FlaskChestInfluxDB` class allows for writing to an InfluxDB database. It provides an interface to write data points to instances of `InfluxDB 2.X` using the `influxdb-client` library.
+The `FlaskChestInfluxDB` class allows for writing to an InfluxDB database. It provides an interface to write data points to instances of `InfluxDB 2.X` using the `influxdb-client` library. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestinfluxdb).
 
 | Parameter       | Default Value | Description                                                  |
 |-----------------|---------------|--------------------------------------------------------------|
