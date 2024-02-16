@@ -2,22 +2,22 @@
 <link rel="stylesheet" type="text/css" href="_static/custom.css">
 
 # Sample Usage
-Below is an example of a basic Flask route that uses the `flask_chest` decorator to write to both an <u>InfluxDB 2.x instance</u> and an <u>API listening on `http://localhost:3000` for POST requests</u>.
+
+## Example: Exporting SLIs to Multiple Targets
+Suppose you have a Flask app that is serving an API, and you want to report on [Service Level Indicators](https://sre.google/sre-book/service-level-objectives/) (SLIs) to both an <u>InfluxDB 2.x instance</u> and <u>[SignalFX](https://www.splunk.com/en_us/about-splunk/acquisitions/signalfx.html)</u>. For this example, your SLIs are <b>total transactions</b> and <b>average response time of POST requests</b> to a single API endpoint. You want to track these SLIs for each request made to the API, and export them to both backends, so that you can <u>monitor and analyze the performance of your API in real-time</u>.<br>
 
 <center>
 <figure>
 <img src="_static/flask_chest_simple_diagram.png" style="width:600px;"/>
 <figcaption>Fig 1: Multi-target data flow diagram showing how data is exported from the view function of a Flask route to multiple backends using the `Flask-Chest` package.</figcaption>
 </figure>
-</center>
+</center><br>
 
-This example uses the following Flask Chest objects:
-- `FlaskChestInfluxDB`
-- `FlaskChestCustomWriter`
+This example uses the following `FlaskChest` objects:
+- `FlaskChestInfluxDB`, to establish a connection to an InfluxDB 2.x instance and write data points to a specified bucket.
+- `FlaskChestCustomWriter`, to post data points to a SignalFX endpoint over HTTP.
 
 As well as the `flask_chest` decorator to track global context variables and write data points to the specified backends.
-
----
 
 ## Imports
 First you must import `FlaskChestInfluxDB`, `FlaskChestCustomWriter`, and the `flask_chest` decorator from the `flask-chest`package.
@@ -27,8 +27,10 @@ from flask_chest import FlaskChestCustomWriter, FlaskChestInfluxDB
 from flask_chest.decorator import flask_chest
 ```
 
+Then you must initialize each chest object with their respective parameters.
+
 ## FlaskChestInfluxDB
-Then you must initialize each chest object with the necessary parameters. Our `FlaskChestInfluxDB` will write data points to an InfluxDB 2.x database running on `http://localhost:8086` with the provided authentication token. The data points are written to the `my-bucket` bucket in the `my-org` organization, and custom tags are added to each data point. We are also passing a global logging object, so that our logs are written to the same place as the rest of our Flask app,
+Our `FlaskChestInfluxDB` will write data points to an InfluxDB 2.x database running on `http://localhost:8086` with the provided authentication token. The data points are written to the `my-bucket` bucket in the `my-org` organization, and custom tags are added to each data point. We are also passing a global logging object, so that our logs are written to the same place as the rest of our Flask app,
 
 ```python
 chest_influxdb = FlaskChestInfluxDB(
