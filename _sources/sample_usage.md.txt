@@ -63,12 +63,10 @@ Our `FlaskChestCustomWriter` will:
 - Log all messages using the provided logger instance.
 - Not verify the server's TLS certificate.
 - Consider HTTP status codes `200` and `201` as success.
-- Not send any headers or URL parameters with the POST request.
-- Not use any proxies.
 
 ```python
 chest_signalfx = FlaskChestCustomWriter(
-    name="CustomWriter",
+    name="SignalFX",
     url="http://localhost:3000",
     payload_generator=cust_payload_generator,
     verify=False,

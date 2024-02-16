@@ -261,11 +261,9 @@
 <li><p>Log all messages using the provided logger instance.</p></li>
 <li><p>Not verify the server’s TLS certificate.</p></li>
 <li><p>Consider HTTP status codes <code class="docutils literal notranslate"><span class="pre">200</span></code> and <code class="docutils literal notranslate"><span class="pre">201</span></code> as success.</p></li>
-<li><p>Not send any headers or URL parameters with the POST request.</p></li>
-<li><p>Not use any proxies.</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">chest_signalfx</span> <span class="o">=</span> <span class="n">FlaskChestCustomWriter</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CustomWriter&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;SignalFX&quot;</span><span class="p">,</span>
     <span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://localhost:3000&quot;</span><span class="p">,</span>
     <span class="n">payload_generator</span><span class="o">=</span><span class="n">cust_payload_generator</span><span class="p">,</span>
     <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
