@@ -36,7 +36,7 @@ From the Flask documentation by Pallets Projects:
 
 
 ## Features
-- Implements multiple [`FlaskChest` objects](interfaces.md#flask-chest-objects), providing an <u>abstraction layer for different databases</u> (and other backends) using a simple/minimal interface.
+- Implements multiple [`FlaskChest` objects](interfaces.md#flaskchest-objects), providing an <u>abstraction layer for different databases</u> (and other backends) using a simple/minimal interface.
 - Provides the [`@flask_chest` decorator](interfaces.md#flask-chest-decorator) for view functions, <u>automatically exporting global context variables</u> to your configured targets.
 - Customizable [request ID generation](interfaces.md#request-id-generator), enabling the <u>identification and aggregation of context data generated during the same request</u> context.
 - Implements thread-safe data exporters, scheduled using [Flask-APScheduler](https://github.com/viniciuschiele/flask-apscheduler), to <u>cache context data and periodically export it</u>.
