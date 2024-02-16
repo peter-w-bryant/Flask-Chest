@@ -6,12 +6,12 @@
 ## Example: Exporting SLIs to Multiple Targets
 Suppose you have a Flask app that is serving an API, and you want to report on [Service Level Indicators](https://sre.google/sre-book/service-level-objectives/) (SLIs) to both an <u>InfluxDB 2.x instance</u> and <u>[SignalFX](https://www.splunk.com/en_us/about-splunk/acquisitions/signalfx.html)</u>. For this example, your SLIs are <b>total transactions</b> and <b>average response time of POST requests</b> to a single API endpoint. You want to track these SLIs for each request made to the API, and export them to both backends, so that you can <u>monitor and analyze the performance of your API in real-time</u>.<br>
 
-<center>
+<!-- <center>
 <figure>
 <img src="_static/flask_chest_simple_diagram.png" style="width:600px;"/>
 <figcaption>Fig 1: Multi-target data flow diagram showing how data is exported from the view function of a Flask route to multiple backends using the `Flask-Chest` package.</figcaption>
 </figure>
-</center><br>
+</center><br> -->
 
 This example uses the following `FlaskChest` objects:
 - `FlaskChestInfluxDB`, to establish a connection to an InfluxDB 2.x instance and write data points to a specified bucket.
@@ -89,11 +89,10 @@ Now that the Flask Chest objects are initialized, we can apply our `flask_chest`
 )
 def index():
     g.start = time.time()
+    g.transaction = 1
     if request.method == "POST":
-        g.transaction = 1
         g.response_time = time.time() - g.start
         return "Hello, World!"
-    g.transaction = 1
     g.response_time = time.time() - g.start
     return "Hello, World!"
 ```
@@ -119,11 +118,10 @@ With our `FlaskChest` objects, our tracked variables dictionary, and our `reques
 )
 def index():
     g.start = time.time()
+    g.transaction = 1
     if request.method == "POST":
-        g.transaction = 1
         g.response_time = time.time() - g.start
         return "Hello, World!"
-    g.transaction = 1
     g.response_time = time.time() - g.start
     return "Hello, World!"
 ```
