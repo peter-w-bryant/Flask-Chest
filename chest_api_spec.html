@@ -197,7 +197,7 @@
         <article role="main">
           <section id="flaskchest-api-specification">
 <h1><code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> API Specification<a class="headerlink" href="#flaskchest-api-specification" title="Link to this heading">#</a></h1>
-<p>To keep the project modular and extensible, the <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> object API is defined in this document, and all <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects must implement the following class interface.</p>
+<p>To keep the project modular and extensible, <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects must implement the following class interface.</p>
 <p>The API itself is very simple, where the only substantial method is the <code class="docutils literal notranslate"><span class="pre">write</span></code> method, which takes a <a class="reference internal" href="interfaces.html#example-context-tuple-list"><span class="std std-ref">list of 3-tuples</span></a> as an argument and writes a data point to the respective backend. Each 3-tuple is a global context variable of the form <code class="docutils literal notranslate"><span class="pre">(variable_name,</span> <span class="pre">variable_value,</span> <span class="pre">request_id)</span></code>. The order of the tuples in the list is the same as the order of the variables in the <code class="docutils literal notranslate"><span class="pre">tracked_vars</span></code> parameter of the <a class="reference internal" href="interfaces.html#flask-chest-decorator"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code></span></a> decorator.</p>
 <section id="class-definition-and-interface">
 <h2>Class Definition and Interface<a class="headerlink" href="#class-definition-and-interface" title="Link to this heading">#</a></h2>
@@ -236,8 +236,11 @@
 <section id="logging">
 <h3>Logging<a class="headerlink" href="#logging" title="Link to this heading">#</a></h3>
 <p>Your <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> object should log all messages using the provided <code class="docutils literal notranslate"><span class="pre">logger</span></code> instance, and should not print to the console. If no <code class="docutils literal notranslate"><span class="pre">logger</span></code> instance is provided, the <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> object should not log any messages. All log messages should be include <code class="docutils literal notranslate"><span class="pre">SampleFlaskChest(name=&lt;chest_name&gt;)</span></code> in the log message, the preferred method for doing so is to use the <code class="docutils literal notranslate"><span class="pre">self.id</span></code> attribute.</p>
-<p>For an example implementation, see the <a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest/blob/main/flask-chest/flask_chest/chests/custom.py"><code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code></a> class.</p>
 </section>
+</section>
+<section id="example-implementation">
+<h2>Example Implementation<a class="headerlink" href="#example-implementation" title="Link to this heading">#</a></h2>
+<p>For an example implementation, see the <a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest/blob/main/flask-chest/flask_chest/chests/custom.py"><code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code></a> class.</p>
 </section>
 </section>
 
@@ -283,6 +286,7 @@
 <li><a class="reference internal" href="#logging">Logging</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#example-implementation">Example Implementation</a></li>
 </ul>
 </li>
 </ul>
