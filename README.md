@@ -35,7 +35,7 @@ pip install flask-chest
 ```
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. View the [CONTRIBUTING](CONTRIBUTING.md) file for more information.
+Pull requests are welcome. Please open an issue first to discuss what you would like to change. If you would like to extend the available `FlaskChest` object backend interfaces, please implement the `FlaskChest` object [API spec](chest_api_spec.md) and run the available [test suite](under_construction.md) before opening a PR. See [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
