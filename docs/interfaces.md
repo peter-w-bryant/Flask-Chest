@@ -15,7 +15,7 @@ The following `FlaskChest` objects are currently implemented:
 - `FlaskChestMySQL`
 
 ### FlaskChestCustomWriter
-The `FlaskChestCustomWriter` class provides an interface to write context data to any backend that can accept HTTP POST requests. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestcustomwriter).
+The `FlaskChestCustomWriter` class provides an interface to write context data to any backend that can accept HTTP POST requests. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/sample_usage.html#flaskchestcustomwriter).
 
 | Parameter (*=required)           | Data Type     | Default Value | Description                                                  |
 |--------------------|---------------|---------------|--------------------------------------------------------------|
@@ -34,14 +34,14 @@ The `FlaskChestCustomWriter` class provides an interface to write context data t
 ```python
 def payload_generator(context_tuple_list: List[Tuple[str, str, str]]) -> dict|list|str|int|float|bool|None:
 ```
-When using the `FlaskChestCustomWriter` class, a payload generator function must be provided, but <i>can be named anything</i>. This function is used to <b>generate the JSON body for the POST request</b> every time the `flask_chest` decorator is applied to a Flask route. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestcustomwriter).
+When using the `FlaskChestCustomWriter` class, a payload generator function must be provided, but <i>can be named anything</i>. This function is used to <b>generate the JSON body for the POST request</b> every time the `flask_chest` decorator is applied to a Flask route. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/sample_usage.html#flaskchestcustomwriter).
 
 This function must implement the following interface:
 - It must take a list of 3-tuples as an argument. Each 3-tuple is a global context variable of the form `(variable_name, variable_value, request_id)`. The order of the tuples in the list is the same as the order of the variables in the `tracked_vars` parameter of the [`flask_chest`](#the-flask_chest-decorator) decorator.
 - It must return a [JSON serializable payload](https://learnpython.com/blog/object-serialization-in-python/) (e.g. `dict`, `list`, `str`, `int`, `float`, `bool`, and `None`).
 
 ### FlaskChestInfluxDB
-The `FlaskChestInfluxDB` class provides an interface to write data points to instances of [InfluxDB 2.X](https://docs.influxdata.com/influxdb/v2/) using the [influxdb-client](https://github.com/influxdata/influxdb-client-python) library. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestinfluxdb).
+The `FlaskChestInfluxDB` class provides an interface to write data points to instances of [InfluxDB 2.X](https://docs.influxdata.com/influxdb/v2/) using the [influxdb-client](https://github.com/influxdata/influxdb-client-python) library. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/sample_usage.html#flaskchestinfluxdb).
 
 | Parameter (*=required)           | Data Type     | Default Value | Description                                                  |
 |----------------------------------|---------------|---------------|--------------------------------------------------------------|
@@ -54,12 +54,12 @@ The `FlaskChestInfluxDB` class provides an interface to write data points to ins
 
 #### Specifying Custom Tags
 
-The `custom_tags` parameter is optional and can be used to add custom tags to each data point written to InfluxDB; each key-value pair in the dictionary should be of the form `{"tag_name": "tag_value"}`. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestinfluxdb).
+The `custom_tags` parameter is optional and can be used to add custom tags to each data point written to InfluxDB; each key-value pair in the dictionary should be of the form `{"tag_name": "tag_value"}`. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/sample_usage.html#flaskchestinfluxdb).
 
 ---
 
 ## `flask_chest` Decorator
-The `flask_chest` decorator is used to track and write specified context variables to the target specified in the `chests` parameter. It can be applied to any Flask route, and will write data points to the specified backends every time the route is accessed. Each `FlaskChest` object passed to the `chests` parameter will receive the same data points. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#the-flask-chest-decorator).
+The `flask_chest` decorator is used to track and write specified context variables to the target specified in the `chests` parameter. It can be applied to any Flask route, and will write data points to the specified backends every time the route is accessed. Each `FlaskChest` object passed to the `chests` parameter will receive the same data points. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/sample_usage.html#the-flask-chest-decorator).
 
 | Parameter (*=required)           | Data Type     | Default Value                  | Description                                                  |
 |----------------------------------|---------------|--------------------------------|--------------------------------------------------------------|
@@ -72,7 +72,7 @@ The `flask_chest` decorator is used to track and write specified context variabl
 The `chests` parameter is a list of `FlaskChest` objects that the decorator will write to. The `tracked_vars` parameter is a dictionary specifying which global context variables to write to the chests per request method. If this parameter is set to `None`, all variables in `g.variables` will be tracked and written to the chests.
 
 ### Request ID Generator
-The `request_id_generator` parameter is a function that should <u>return a unique identifier for each request as a string</u>. This ID is used to track and identify specific requests in the database, and can be used to trace the data back to the request that generated it. The default value for this parameter is a lambda function that returns a [UUID4](https://docs.python.org/3/library/uuid.html) string. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#the-flask-chest-decorator).
+The `request_id_generator` parameter is a function that should <u>return a unique identifier for each request as a string</u>. This ID is used to track and identify specific requests in the database, and can be used to trace the data back to the request that generated it. The default value for this parameter is a lambda function that returns a [UUID4](https://docs.python.org/3/library/uuid.html) string. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/sample_usage.html#the-flask-chest-decorator).
 
 
 ### Exception Handling
