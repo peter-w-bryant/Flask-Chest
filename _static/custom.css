@@ -1,0 +1,4 @@
+/* Make figure captions 0.8em */
+figure figcaption {
+    font-size: 0.8em;
+}

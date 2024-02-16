@@ -1,78 +1,73 @@
-> &#128204; Last updated : 2024-2-11 
-# Interfaces [![GitHub Issues](https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest)](https://github.com/peter-w-bryant/Flask-Chest/issues)
+````{note}
+Last updated : 2024-2-15
+````
 
-- [Flask-Chest Objects](#flask-chest-objects)
-  - [FlaskChestCustomWriter](#flaskchestcustomwriter)
-    - [Payload Generator Function](#payload-generator-function)
-  - [FlaskChestInfluxDB](#flaskchestinfluxdb)
-    - [Specifying Custom Tags](#specifying-custom-tags)
-- [`flask_chest` Decorator](#flask-chest-decorator)
-    - [Request ID Generator](#request-id-generator)
-    - [Exception Handling](#exception-handling)
+# APIs [![GitHub Issues](https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest)](https://github.com/peter-w-bryant/Flask-Chest/issues)
 
----
-
-## Flask-Chest Objects
+## FlaskChest Objects
 `FlaskChest` objects are <u>an abstraction layer for different databases</u> (and other backends). Once initialized, they can be passed as arguments to the [`flask_chest` decorator](#flask-chest-decorator) to write data to their respective backends.
 
-At the time of writing, the following `FlaskChest` objects are implemented:
+The following `FlaskChest` objects are currently implemented:
 - [`FlaskChestCustomWriter`](#flaskchestcustomwriter)
 - [`FlaskChestInfluxDB`](#flaskchestinfluxdb)
-- [`FlaskChestPrometheus`](#flaskchestprometheus)
+- `FlaskChestPrometheus`
 - `FlaskChestSQLite`
 - `FlaskChestMySQL`
 
 ### FlaskChestCustomWriter
-The `FlaskChestCustomWriter` class allows for writing to a custom backend by making HTTP POST requests with a custom payload. It provides an interface to write data to any backend that can accept HTTP POST requests. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestcustomwriter).
+The `FlaskChestCustomWriter` class provides an interface to write context data to any backend that can accept HTTP POST requests. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestcustomwriter).
 
-| Parameter (*=required)           | Default Value | Description                                                  |
-|--------------------|---------------|--------------------------------------------------------------|
-| url*                | None         | The URL the custom writer will POST data to.                 |
-| payload_generator*  | None         | A function that generates the payload for the POST request (see [Payload Generator Function](#payload-generator-function)). |
-| name               | url           | The name of the custom writer (useful for logging).          |
-| headers            | None          | HTTP headers to be sent with the POST request.               |
-| params             | None          | URL parameters to be sent with the POST request.             |
-| proxies            | None          | Proxy URLs to be used for the POST request.                  |
-| verify             | False         | Whether to verify the server's TLS certificate.              |
-| success_status_codes | [200]       | List of HTTP status codes considered as success.             |
-| logger             | None          | Logger instance for logging INFO, DEBUG, and ERROR messages. |
+| Parameter (*=required)           | Data Type     | Default Value | Description                                                  |
+|--------------------|---------------|---------------|--------------------------------------------------------------|
+| `url`*                | `str`          | `None`          | The URL the custom writer will POST data to.                 |
+| `payload_generator`*  | `func`         | `None`          | A function that generates the payload for the POST request (see [Payload Generator Function](#payload-generator-function)). |
+| `name`               | `str`          | `<your_url>`           | The name of the custom writer (useful for logging).          |
+| `headers`            | `dict`          | `None`          | HTTP headers to be sent with the POST request.               |
+| `params`             | `dict`          | `None`          | URL parameters to be sent with the POST request.             |
+| `proxies`            | `dict`          | `None`          | Proxy URLs to be used for the POST request.                  |
+| `verify`             | `bool`       | `False`         | Whether to verify the server's TLS certificate.              |
+| `success_status_codes` | `list[int]`  | `[200]`         | List of HTTP status codes that indicate a successful POST request. |
+| `logger`             | `object`        | `None`          | Logger instance for logging messages.                        |
+
 
 #### Payload Generator Function
 ```python
-def payload_generator(variables: List[Tuple[str, Any, str]]) -> Any:
+def payload_generator(variables: List[Tuple[str, str, str]]) -> dict|list|str|int|float|bool|None:
 ```
 When using the `FlaskChestCustomWriter` class, a payload generator function must be provided, but <i>can be named anything</i>. This function is used to <b>generate the JSON body for the POST request</b> every time the `flask_chest` decorator is applied to a Flask route. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestcustomwriter).
 
 This function must implement the following interface:
 - It must take a list of 3-tuples as an argument. Each 3-tuple is a global context variable of the form `(variable_name, variable_value, request_id)`. The order of the tuples in the list is the same as the order of the variables in the `tracked_vars` parameter of the [`flask_chest`](#the-flask_chest-decorator) decorator.
-- It must return a JSON serializable payload (e.g. a string, a dictionary, etc.).
+- It must return a [JSON serializable payload](https://learnpython.com/blog/object-serialization-in-python/) (e.g. `dict`, `list`, `str`, `int`, `float`, `bool`, and `None`).
 
-## FlaskChestInfluxDB
-The `FlaskChestInfluxDB` class allows for writing to an InfluxDB database. It provides an interface to write data points to instances of `InfluxDB 2.X` using the `influxdb-client` library. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestinfluxdb).
+### FlaskChestInfluxDB
+The `FlaskChestInfluxDB` class provides an interface to write data points to instances of [InfluxDB 2.X](https://docs.influxdata.com/influxdb/v2/) using the [influxdb-client](https://github.com/influxdata/influxdb-client-python) library. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestinfluxdb).
 
-| Parameter       | Default Value | Description                                                  |
-|-----------------|---------------|--------------------------------------------------------------|
-| url*             | None          | The URL of the InfluxDB server.                              |
-| token*           | ""            | The InfluxDB authentication token.                           |
-| org*             | "my-org"      | The InfluxDB organization.                                   |
-| bucket*          | "my-bucket"   | The InfluxDB bucket.                                         |
-| custom_tags     | {}            | Custom tags to be included with each data point.             |
-| logger          | None          | Logger instance for logging messages.                        |
+| Parameter (*=required)           | Data Type     | Default Value | Description                                                  |
+|----------------------------------|---------------|---------------|--------------------------------------------------------------|
+| `url`*                             | `str`         | `None`        | The URL of the InfluxDB server.                              |
+| `token`*                           | `str`         | `""`          | The InfluxDB authentication token.                           |
+| `org`*                             | `str`         | `"my-org"`    | The InfluxDB organization.                                   |
+| `bucket`*                          | `str`         | `"my-bucket"` | The InfluxDB bucket.                                         |
+| `custom_tags`                      | `dict`        | `{}`          | Custom tags to be included with each data point.             |
+| `logger`                           | `object`      | `None`        | Logger instance for logging messages.                        |
 
-### Specifying Custom Tags
-The `custom_tags` parameter is optional and can be used to add custom tags to each data point written to InfluxDB. The `logger` parameter is also optional and allows a user to provide a custom logger instance for logging messages. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestinfluxdb).
+#### Specifying Custom Tags
+
+The `custom_tags` parameter is optional and can be used to add custom tags to each data point written to InfluxDB; each key-value pair in the dictionary should be of the form `{"tag_name": "tag_value"}`. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestinfluxdb).
 
 ---
 
 ## `flask_chest` Decorator
-The `flask_chest` decorator is used to track and write specified context variables to the backends specified in the `chests` parameter. It can be applied to any Flask route, and will write data points to the specified backends every time the route is accessed. Each `FlaskChest` object passed to the `chests` parameter will receive the same data points. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#the-flask-chest-decorator).
+The `flask_chest` decorator is used to track and write specified context variables to the target specified in the `chests` parameter. It can be applied to any Flask route, and will write data points to the specified backends every time the route is accessed. Each `FlaskChest` object passed to the `chests` parameter will receive the same data points. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#the-flask-chest-decorator).
 
-| Parameter            | Default Value | Description                                                  |
-|----------------------|---------------|--------------------------------------------------------------|
-| chests*               | None          | List of Flask-Chest instances to write data to.               |
-| tracked_vars*         | None          | Dictionary mapping HTTP methods to lists of tracked variables. |
-| request_id_generator | `lambda: str(uuid.uuid4())` | A function that generates a unique request ID.               |
-| raise_exceptions     | True          | Whether to raise exceptions if writing to a chest fails.     |
+| Parameter (*=required)           | Data Type     | Default Value                  | Description                                                  |
+|----------------------------------|---------------|--------------------------------|--------------------------------------------------------------|
+| chests*                          | `list[FlaskChest]` | `None`                    | List of `FlaskChest` objects to write data to.              |
+| tracked_vars*                    | `dict`        | `None`                         | Dictionary mapping HTTP methods to lists of tracked variables. |
+| request_id_generator             | `func`        | `lambda: str(uuid.uuid4())`    | A function that generates a unique request ID.               |
+| raise_exceptions                 | `bool`        | `True`                         | Whether to raise exceptions if writing to a chest fails.     |
+
 
 The `chests` parameter is a list of `FlaskChest` objects that the decorator will write to. The `tracked_vars` parameter is a dictionary specifying which global context variables to write to the chests per request method. If this parameter is set to `None`, all variables in `g.variables` will be tracked and written to the chests.
 

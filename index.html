@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="_static/_static/custom.css" />
     
     
 
@@ -157,8 +158,9 @@
   <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
-<li class="toctree-l1"><a class="reference internal" href="interfaces.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basic_app.html">Basic Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interfaces.html">APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_usage.html">Sample Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
 </ul>
 
 </div>
@@ -195,9 +197,11 @@
         <article role="main">
           <div class="toctree-wrapper compound">
 </div>
+<!-- Import custom.css -->
+<link rel="stylesheet" type="text/css" href="_static/custom.css">
 <section id="flask-chest">
 <h1>Flask-Chest <a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest"><img alt="Repo" src="https://badgen.net/badge/icon/GitHub?icon=github&amp;label&amp;color=black" /></a><a class="headerlink" href="#flask-chest" title="Link to this heading">#</a></h1>
-<p>Flask-Chest is a <b>Python package</b> adding support for the automated tracking and exporting of <a class="reference external" href="https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data">global context variables</a> (<code class="docutils literal notranslate"><span class="pre">g.variables</span></code>) within the <a class="reference external" href="https://flask.palletsprojects.com/en/3.0.x/reqcontext/">request context</a> of each client interaction.</p>
+<p>Flask-Chest is a <b>Python package</b> adding support for the automated tracking and exporting of <a class="reference external" href="https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data">global context variables</a> (<code class="docutils literal notranslate"><span class="pre">g.variables</span></code>) within the <a class="reference external" href="https://flask.palletsprojects.com/en/3.0.x/reqcontext/">request context</a> of each client interaction. It provides a simple interface for making metrics, query parameters, and other context data available to a variety of backend targets, including databases, and custom HTTP endpoints.</p>
 <center>
 <p><img alt="Flask-Chest Icon" src="_images/flask_chest_README.png" /></p>
 </center>
@@ -215,9 +219,9 @@
 <section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Implements multiple <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects, providing an <u>abstraction layer for different databases (and other backends)</u> using a simple/minimal interface.</p></li>
-<li><p>Provides the <code class="docutils literal notranslate"><span class="pre">&#64;flask_chest</span></code> decorator for view functions, <u>automatically exporting global context variables</u> to your configured data store.</p></li>
-<li><p>Customizable request ID generation, enabling the <u>identification and aggregation of context data generated during the same request</u> context.</p></li>
+<li><p>Implements multiple <a class="reference external" href="https://peter-w-bryant.github.io/Flask-Chest/interfaces.html#flask-chest-objects"><code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects</a>, providing an <u>abstraction layer for different databases</u> (and other backends) using a simple/minimal interface.</p></li>
+<li><p>Provides the <a class="reference external" href="https://peter-w-bryant.github.io/Flask-Chest/interfaces.html#flask-chest-decorator"><code class="docutils literal notranslate"><span class="pre">&#64;flask_chest</span></code> decorator</a> for view functions, <u>automatically exporting global context variables</u> to your configured targets.</p></li>
+<li><p>Customizable <a class="reference external" href="https://peter-w-bryant.github.io/Flask-Chest/interfaces.html#request-id-generator">request ID generation</a>, enabling the <u>identification and aggregation of context data generated during the same request</u> context.</p></li>
 <li><p>Implements thread-safe data exporters, scheduled using <a class="reference external" href="https://github.com/viniciuschiele/flask-apscheduler">Flask-APScheduler</a>, to <u>cache context data and periodically export it</u>.</p></li>
 </ul>
 </section>
@@ -229,11 +233,16 @@
 </section>
 <section id="usage-diagram">
 <h2>Usage Diagram<a class="headerlink" href="#usage-diagram" title="Link to this heading">#</a></h2>
-<p><img alt="Flask-Chest Simple Diagram" src="_images/flask_chest_simple_diagram.png" /></p>
+<center>
+<figure>
+<img src="_static/flask_chest_simple_diagram.png" style="width:700px;"/>
+<figcaption>Fig 1: Multi-target data flow diagram showing how data is exported from the view function of a Flask route to multiple backends using the `Flask-Chest` package.</figcaption>
+</figure>
+</center>
 </section>
 <section id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">#</a></h2>
-<p>Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. View the <a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest/blob/main/CONTRIBUTING.md">CONTRIBUTING</a> file for more information.</p>
+<p>Pull requests are welcome. Please open an issue first to discuss what you would like to change. If you would like to extend the available <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> object backend interfaces, please implement the <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> object <a class="reference internal" href="#"><span class="xref myst">API spec</span></a> and run the available <a class="reference internal" href="#"><span class="xref myst">test suite</span></a> before opening a PR. See <a class="reference external" href="https://peter-w-bryant.github.io/Flask-Chest/CONTRIBUTING.html">CONTRIBUTING</a> for more information.</p>
 </section>
 <section id="license">
 <h2>License<a class="headerlink" href="#license" title="Link to this heading">#</a></h2>
@@ -280,7 +289,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=0c446633"></script>
+</div><script src="_static/documentation_options.js?v=e2f847f2"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

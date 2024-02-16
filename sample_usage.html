@@ -3,13 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Interfaces" href="interfaces.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Contributing" href="CONTRIBUTING.html" /><link rel="prev" title="APIs" href="interfaces.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>Basic Application - Flask-Chest</title>
+        <title>Sample Usage - Flask-Chest</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="_static/_static/custom.css" />
     
     
 
@@ -157,8 +158,9 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
-<li class="toctree-l1"><a class="reference internal" href="interfaces.html">Interfaces</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Basic Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interfaces.html">APIs</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Sample Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
 </ul>
 
 </div>
@@ -193,8 +195,8 @@
           </label>
         </div>
         <article role="main">
-          <section id="basic-application">
-<h1>Basic Application<a class="headerlink" href="#basic-application" title="Link to this heading">#</a></h1>
+          <section id="sample-usage">
+<h1>Sample Usage<a class="headerlink" href="#sample-usage" title="Link to this heading">#</a></h1>
 <p>Below is an example of a basic Flask route that uses the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to write to both an <u>InfluxDB 2.x instance</u> and an <u>API listening on <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code> for POST requests</u>.</p>
 <p>This example uses the following Flask Chest objects:</p>
 <ul class="simple">
@@ -249,8 +251,8 @@
 </pre></div>
 </div>
 </section>
-<section id="the-flask-chest-decorator">
-<h2>The <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> Decorator<a class="headerlink" href="#the-flask-chest-decorator" title="Link to this heading">#</a></h2>
+<section id="flask-chest-decorator">
+<h2><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> Decorator<a class="headerlink" href="#flask-chest-decorator" title="Link to this heading">#</a></h2>
 <p>Now that the Flask Chest objects are initialized, we can apply our <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to our desired Flask route to start exporting. For this example app, lets use the following simple Flask index route,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
@@ -303,7 +305,15 @@
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="CONTRIBUTING.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Contributing</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="interfaces.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -311,7 +321,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Interfaces </div>
+                <div class="title">APIs </div>
                 
               </div>
             </a>
@@ -345,11 +355,11 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Basic Application</a><ul>
+<li><a class="reference internal" href="#">Sample Usage</a><ul>
 <li><a class="reference internal" href="#imports">Imports</a></li>
 <li><a class="reference internal" href="#flaskchestinfluxdb">FlaskChestInfluxDB</a></li>
 <li><a class="reference internal" href="#flaskchestcustomwriter">FlaskChestCustomWriter</a></li>
-<li><a class="reference internal" href="#the-flask-chest-decorator">The <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> Decorator</a></li>
+<li><a class="reference internal" href="#flask-chest-decorator"><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> Decorator</a></li>
 </ul>
 </li>
 </ul>
@@ -361,7 +371,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=0c446633"></script>
+</div><script src="_static/documentation_options.js?v=e2f847f2"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

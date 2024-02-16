@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="APIs" href="interfaces.html" /><link rel="prev" title="Flask-Chest" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>Install - Flask-Chest</title>
+        <title>FlaskChest Object API Specification - Flask-Chest</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -155,9 +155,9 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul class="current">
+  <ul>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interfaces.html">APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sample_usage.html">Sample Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
@@ -195,10 +195,36 @@
           </label>
         </div>
         <article role="main">
-          <section id="install">
-<h1>Install <a class="reference external" href="https://pypi.org/project/flask-chest/"><img alt="PyPI" src="https://img.shields.io/pypi/v/flask-chest" /></a><a class="headerlink" href="#install" title="Link to this heading">#</a></h1>
-<p>You can install Flask-Chest via the Python Package Index (<a class="reference external" href="https://pypi.org/project/flask-chest/">PyPI</a>).</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>flask-chest
+          <section id="flaskchest-object-api-specification">
+<h1><code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> Object API Specification<a class="headerlink" href="#flaskchest-object-api-specification" title="Link to this heading">#</a></h1>
+<p>All <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects must implement the following interface:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">YourFlaskChest</span><span class="p">(</span><span class="n">FlaskChest</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the `FlaskChest` object.</span>
+
+<span class="sd">        :param name: The name of the `FlaskChest` object (useful for logging).</span>
+<span class="sd">        :param logger: Logger instance for logging messages.</span>
+<span class="sd">        :param kwargs: Additional keyword arguments specific to the `FlaskChest` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a string representation of the `FlaskChest` object.</span>
+
+<span class="sd">        :return: A string representation of the `FlaskChest` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write the context variables to the backend.</span>
+
+<span class="sd">        :param variables: A list of 3-tuples, each containing a global context variable of the form</span>
+<span class="sd">                          `(variable_name, variable_value, request_id)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
 </pre></div>
 </div>
 </section>
@@ -208,26 +234,8 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="interfaces.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">APIs </div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="index.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">Home</div>
-                
-              </div>
-            </a>
+          
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
