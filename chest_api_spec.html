@@ -135,7 +135,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -189,7 +189,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -197,8 +197,10 @@
         <article role="main">
           <section id="flaskchest-object-api-specification">
 <h1><code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> Object API Specification<a class="headerlink" href="#flaskchest-object-api-specification" title="Link to this heading">#</a></h1>
-<p>All <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects must implement the following interface:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">YourFlaskChest</span><span class="p">(</span><span class="n">FlaskChest</span><span class="p">):</span>
+<section id="class-definition-and-interface">
+<h2>Class Definition and Interface<a class="headerlink" href="#class-definition-and-interface" title="Link to this heading">#</a></h2>
+<p>All <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects must implement the following class interface:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SampleFlaskChest</span><span class="p">(</span><span class="n">FlaskChest</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the `FlaskChest` object.</span>
@@ -227,6 +229,12 @@
         <span class="k">pass</span>
 </pre></div>
 </div>
+<section id="logging">
+<h3>Logging<a class="headerlink" href="#logging" title="Link to this heading">#</a></h3>
+<p>Your <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> object should log all messages using the provided <code class="docutils literal notranslate"><span class="pre">logger</span></code> instance, and should not print to the console. If no <code class="docutils literal notranslate"><span class="pre">logger</span></code> instance is provided, the <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> object should not log any messages. All log messages should be include <code class="docutils literal notranslate"><span class="pre">SampleFlaskChest(name=&lt;chest_name&gt;)</span></code> in the log message.</p>
+<p>For an example implementation, see the <a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest/blob/main/flask-chest/flask_chest/chests/custom.py"><code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code></a> class.</p>
+</section>
+</section>
 </section>
 
         </article>
@@ -254,8 +262,30 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> Object API Specification</a><ul>
+<li><a class="reference internal" href="#class-definition-and-interface">Class Definition and Interface</a><ul>
+<li><a class="reference internal" href="#logging">Logging</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

@@ -195,9 +195,17 @@
           </label>
         </div>
         <article role="main">
-          <section id="sample-usage">
+          <!-- Import custom.css -->
+<link rel="stylesheet" type="text/css" href="_static/custom.css">
+<section id="sample-usage">
 <h1>Sample Usage<a class="headerlink" href="#sample-usage" title="Link to this heading">#</a></h1>
 <p>Below is an example of a basic Flask route that uses the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to write to both an <u>InfluxDB 2.x instance</u> and an <u>API listening on <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code> for POST requests</u>.</p>
+<center>
+<figure>
+<img src="_static/flask_chest_simple_diagram.png" style="width:600px;"/>
+<figcaption>Fig 1: Multi-target data flow diagram showing how data is exported from the view function of a Flask route to multiple backends using the `Flask-Chest` package.</figcaption>
+</figure>
+</center>
 <p>This example uses the following Flask Chest objects:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code></p></li>
