@@ -197,7 +197,7 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Last updated : 2024-2-15</p>
+<p>Last updated : 2024-2-16</p>
 </div>
 <section id="apis">
 <h1>APIs <a class="reference external" href="https://github.com/peter-w-bryant/Flask-Chest/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest" /></a><a class="headerlink" href="#apis" title="Link to this heading">#</a></h1>
@@ -284,6 +284,18 @@
 <li><p>It must take a list of 3-tuples as an argument. Each 3-tuple is a global context variable of the form <code class="docutils literal notranslate"><span class="pre">(variable_name,</span> <span class="pre">variable_value,</span> <span class="pre">request_id)</span></code>. The order of the tuples in the list is the same as the order of the variables in the <code class="docutils literal notranslate"><span class="pre">tracked_vars</span></code> parameter of the <a class="reference internal" href="#the-flask_chest-decorator"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code></span></a> decorator.</p></li>
 <li><p>It must return a <a class="reference external" href="https://learnpython.com/blog/object-serialization-in-python/">JSON serializable payload</a> (e.g. <code class="docutils literal notranslate"><span class="pre">dict</span></code>, <code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">bool</span></code>, and <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p></li>
 </ul>
+<section id="example-context-tuple-list">
+<h5>Example Context Tuple List<a class="headerlink" href="#example-context-tuple-list" title="Link to this heading">#</a></h5>
+<p>Here is an example of a context tuple list that could be passed to the payload generator function, it contains the variable name, value, and request ID for each global context variable:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">context_tuple_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;transaction&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;11FNKMK4MV&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;post_req_time&quot;</span><span class="p">,</span> <span class="s2">&quot;0.022345&quot;</span><span class="p">,</span> <span class="s2">&quot;0FOA013M3&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;available&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;489JSNL11&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;error_code&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;INMKZO1P0&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 <section id="flaskchestinfluxdb">
@@ -445,7 +457,10 @@
 <li><a class="reference internal" href="#">APIs </a><ul>
 <li><a class="reference internal" href="#flaskchest-objects">FlaskChest Objects</a><ul>
 <li><a class="reference internal" href="#flaskchestcustomwriter">FlaskChestCustomWriter</a><ul>
-<li><a class="reference internal" href="#payload-generator-function">Payload Generator Function</a></li>
+<li><a class="reference internal" href="#payload-generator-function">Payload Generator Function</a><ul>
+<li><a class="reference internal" href="#example-context-tuple-list">Example Context Tuple List</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#flaskchestinfluxdb">FlaskChestInfluxDB</a><ul>

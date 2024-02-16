@@ -202,12 +202,12 @@
 <section id="example-exporting-slis-to-multiple-targets">
 <h2>Example: Exporting SLIs to Multiple Targets<a class="headerlink" href="#example-exporting-slis-to-multiple-targets" title="Link to this heading">#</a></h2>
 <p>Suppose you have a Flask app that is serving an API, and you want to report on <a class="reference external" href="https://sre.google/sre-book/service-level-objectives/">Service Level Indicators</a> (SLIs) to both an <u>InfluxDB 2.x instance</u> and <u><a class="reference external" href="https://www.splunk.com/en_us/about-splunk/acquisitions/signalfx.html">SignalFX</a></u>. For this example, your SLIs are <b>total transactions</b> and <b>average response time of POST requests</b> to a single API endpoint. You want to track these SLIs for each request made to the API, and export them to both backends, so that you can <u>monitor and analyze the performance of your API in real-time</u>.<br></p>
-<center>
+<!-- <center>
 <figure>
 <img src="_static/flask_chest_simple_diagram.png" style="width:600px;"/>
 <figcaption>Fig 1: Multi-target data flow diagram showing how data is exported from the view function of a Flask route to multiple backends using the `Flask-Chest` package.</figcaption>
 </figure>
-</center><br>
+</center><br> -->
 <p>This example uses the following <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code>, to establish a connection to an InfluxDB 2.x instance and write data points to a specified bucket.</p></li>
@@ -286,11 +286,10 @@
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
     <span class="n">g</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">transaction</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">transaction</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">g</span><span class="o">.</span><span class="n">response_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
         <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
-    <span class="n">g</span><span class="o">.</span><span class="n">transaction</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">g</span><span class="o">.</span><span class="n">response_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
     <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
 </pre></div>
@@ -312,11 +311,10 @@
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
     <span class="n">g</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">transaction</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">transaction</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">g</span><span class="o">.</span><span class="n">response_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
         <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
-    <span class="n">g</span><span class="o">.</span><span class="n">transaction</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">g</span><span class="o">.</span><span class="n">response_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
     <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
 </pre></div>

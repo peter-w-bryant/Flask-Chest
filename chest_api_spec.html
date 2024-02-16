@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>FlaskChest Object API Specification - Flask-Chest</title>
+        <title>FlaskChest API Specification - Flask-Chest</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -195,8 +195,10 @@
           </label>
         </div>
         <article role="main">
-          <section id="flaskchest-object-api-specification">
-<h1><code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> Object API Specification<a class="headerlink" href="#flaskchest-object-api-specification" title="Link to this heading">#</a></h1>
+          <section id="flaskchest-api-specification">
+<h1><code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> API Specification<a class="headerlink" href="#flaskchest-api-specification" title="Link to this heading">#</a></h1>
+<p>To keep the project modular and extensible, the <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> object API is defined in this document, and all <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects must implement the following class interface.</p>
+<p>The API itself is very simple, where the only substantial method is the <code class="docutils literal notranslate"><span class="pre">write</span></code> method, which takes a <a class="reference internal" href="interfaces.html#example-context-tuple-list"><span class="std std-ref">list of 3-tuples</span></a> as an argument and writes a data point to the respective backend. Each 3-tuple is a global context variable of the form <code class="docutils literal notranslate"><span class="pre">(variable_name,</span> <span class="pre">variable_value,</span> <span class="pre">request_id)</span></code>. The order of the tuples in the list is the same as the order of the variables in the <code class="docutils literal notranslate"><span class="pre">tracked_vars</span></code> parameter of the <a class="reference internal" href="interfaces.html#flask-chest-decorator"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code></span></a> decorator.</p>
 <section id="class-definition-and-interface">
 <h2>Class Definition and Interface<a class="headerlink" href="#class-definition-and-interface" title="Link to this heading">#</a></h2>
 <p>All <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects must implement the following class interface:</p>
@@ -221,11 +223,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context_tuple_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write the context variables to the backend.</span>
 
-<span class="sd">        :param variables: A list of 3-tuples, each containing a global context variable of the form</span>
+<span class="sd">        :param context_tuple_list: A list of 3-tuples, each containing a global context variable of the form</span>
 <span class="sd">                          `(variable_name, variable_value, request_id)`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
@@ -276,7 +278,7 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> Object API Specification</a><ul>
+<li><a class="reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> API Specification</a><ul>
 <li><a class="reference internal" href="#class-definition-and-interface">Class Definition and Interface</a><ul>
 <li><a class="reference internal" href="#logging">Logging</a></li>
 </ul>
