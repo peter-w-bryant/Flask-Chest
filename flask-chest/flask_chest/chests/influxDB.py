@@ -13,7 +13,6 @@ from .base import FlaskChest
 class FlaskChestInfluxDB(FlaskChest):
     def __init__(
         self,
-        app: Flask,
         https=False,
         host="localhost",
         port=8086,
@@ -23,7 +22,6 @@ class FlaskChestInfluxDB(FlaskChest):
         custom_tags={},
         logger=None,
     ):
-        super().__init__(app)
         http_scheme = "https" if https else "http"
         self.db_uri = f"{http_scheme}://{host}:{port}"
         self.token = token

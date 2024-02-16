@@ -51,7 +51,7 @@ Then we must initialize our `FlaskChestCustomWriter` object, which will post dat
 
 Here is a simple <b>payload generator</b> that returns a dictionary mapping the index of each 3-tuple in the list of 3-tuples, to the 3-tuple itself.
 ```python
-def cust_payload_generator(context_tuple_list: List[Tuple[str, Any, str]]):
+def cust_payload_generator(context_tuple_list: List[Tuple[str, str, str]]):
     payload = {}
     for i, context_tuple in enumerate(context_tuple_list):
         payload[i] = context_tuple
