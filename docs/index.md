@@ -36,9 +36,9 @@ From the Flask documentation by Pallets Projects:
 
 
 ## Features
-- Implements multiple [`FlaskChest` objects](https://peter-w-bryant.github.io/Flask-Chest/interfaces.html#flask-chest-objects), providing an <u>abstraction layer for different databases</u> (and other backends) using a simple/minimal interface.
-- Provides the [`@flask_chest` decorator](https://peter-w-bryant.github.io/Flask-Chest/interfaces.html#flask-chest-decorator) for view functions, <u>automatically exporting global context variables</u> to your configured targets.
-- Customizable [request ID generation](https://peter-w-bryant.github.io/Flask-Chest/interfaces.html#request-id-generator), enabling the <u>identification and aggregation of context data generated during the same request</u> context.
+- Implements multiple [`FlaskChest` objects](interfaces.md#flask-chest-objects), providing an <u>abstraction layer for different databases</u> (and other backends) using a simple/minimal interface.
+- Provides the [`@flask_chest` decorator](interfaces.md#flask-chest-decorator) for view functions, <u>automatically exporting global context variables</u> to your configured targets.
+- Customizable [request ID generation](interfaces.md#request-id-generator), enabling the <u>identification and aggregation of context data generated during the same request</u> context.
 - Implements thread-safe data exporters, scheduled using [Flask-APScheduler](https://github.com/viniciuschiele/flask-apscheduler), to <u>cache context data and periodically export it</u>.
 
 ## Installation [![PyPI](https://img.shields.io/pypi/v/flask-chest)](https://pypi.org/project/flask-chest/)
@@ -48,7 +48,7 @@ pip install flask-chest
 ```
 
 ## Contributing
-Pull requests are welcome. Please open an issue first to discuss what you would like to change. If you would like to extend the available `FlaskChest` object backend interfaces, please implement the `FlaskChest` object [API spec](chest_api_spec.md) and run the available [test suite]() before opening a PR. See [CONTRIBUTING](https://peter-w-bryant.github.io/Flask-Chest/CONTRIBUTING.html) for more information.
+Pull requests are welcome. Please open an issue first to discuss what you would like to change. If you would like to extend the available `FlaskChest` object backend interfaces, please implement the `FlaskChest` object [API spec](chest_api_spec.md) and run the available [test suite](under_construction.md) before opening a PR. See [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE) file for details.
