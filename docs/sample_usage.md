@@ -1,5 +1,15 @@
+<!-- Import custom.css -->
+<link rel="stylesheet" type="text/css" href="_static/custom.css">
+
 # Sample Usage
 Below is an example of a basic Flask route that uses the `flask_chest` decorator to write to both an <u>InfluxDB 2.x instance</u> and an <u>API listening on `http://localhost:3000` for POST requests</u>.
+
+<center>
+<figure>
+<img src="_static/flask_chest_simple_diagram.png" style="width:600px;"/>
+<figcaption>Fig 1: Multi-target data flow diagram showing how data is exported from the view function of a Flask route to multiple backends using the `Flask-Chest` package.</figcaption>
+</figure>
+</center>
 
 This example uses the following Flask Chest objects:
 - `FlaskChestInfluxDB`
