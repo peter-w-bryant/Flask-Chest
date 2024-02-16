@@ -13,6 +13,8 @@ class SampleFlaskChest(FlaskChest):
         :param logger: Logger instance for logging messages.
         :param kwargs: Additional keyword arguments specific to the `FlaskChest` object.
         """
+        self.name = name
+        self.id = f"SampleFlaskChest(name={name})"
         pass
 
     def __str__(self) -> str:
@@ -34,6 +36,6 @@ class SampleFlaskChest(FlaskChest):
 ```
 
 ### Logging
-Your `FlaskChest` object should log all messages using the provided `logger` instance, and should not print to the console. If no `logger` instance is provided, the `FlaskChest` object should not log any messages. All log messages should be include `SampleFlaskChest(name=<chest_name>)` in the log message.
+Your `FlaskChest` object should log all messages using the provided `logger` instance, and should not print to the console. If no `logger` instance is provided, the `FlaskChest` object should not log any messages. All log messages should be include `SampleFlaskChest(name=<chest_name>)` in the log message, the preferred method for doing so is to use the `self.id` attribute.
 
 For an example implementation, see the [`FlaskChestCustomWriter`](https://github.com/peter-w-bryant/Flask-Chest/blob/main/flask-chest/flask_chest/chests/custom.py) class.
