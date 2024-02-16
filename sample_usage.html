@@ -199,20 +199,22 @@
 <link rel="stylesheet" type="text/css" href="_static/custom.css">
 <section id="sample-usage">
 <h1>Sample Usage<a class="headerlink" href="#sample-usage" title="Link to this heading">#</a></h1>
-<p>Below is an example of a basic Flask route that uses the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to write to both an <u>InfluxDB 2.x instance</u> and an <u>API listening on <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code> for POST requests</u>.</p>
+<section id="example-exporting-slis-to-multiple-targets">
+<h2>Example: Exporting SLIs to Multiple Targets<a class="headerlink" href="#example-exporting-slis-to-multiple-targets" title="Link to this heading">#</a></h2>
+<p>Suppose you have a Flask app that is serving an API, and you want to report on <a class="reference external" href="https://sre.google/sre-book/service-level-objectives/">Service Level Indicators</a> (SLIs) to both an <u>InfluxDB 2.x instance</u> and <u><a class="reference external" href="https://www.splunk.com/en_us/about-splunk/acquisitions/signalfx.html">SignalFX</a></u>. For this example, your SLIs are <b>total transactions</b> and <b>average response time of POST requests</b> to a single API endpoint. You want to track these SLIs for each request made to the API, and export them to both backends, so that you can <u>monitor and analyze the performance of your API in real-time</u>.<br></p>
 <center>
 <figure>
 <img src="_static/flask_chest_simple_diagram.png" style="width:600px;"/>
 <figcaption>Fig 1: Multi-target data flow diagram showing how data is exported from the view function of a Flask route to multiple backends using the `Flask-Chest` package.</figcaption>
 </figure>
-</center>
-<p>This example uses the following Flask Chest objects:</p>
+</center><br>
+<p>This example uses the following <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code>, to establish a connection to an InfluxDB 2.x instance and write data points to a specified bucket.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code>, to post data points to a SignalFX endpoint over HTTP.</p></li>
 </ul>
 <p>As well as the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to track global context variables and write data points to the specified backends.</p>
-<hr class="docutils" />
+</section>
 <section id="imports">
 <h2>Imports<a class="headerlink" href="#imports" title="Link to this heading">#</a></h2>
 <p>First you must import <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code>, <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code>, and the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator from the <code class="docutils literal notranslate"><span class="pre">flask-chest</span></code>package.</p>
@@ -220,10 +222,16 @@
 <span class="kn">from</span> <span class="nn">flask_chest.decorator</span> <span class="kn">import</span> <span class="n">flask_chest</span>
 </pre></div>
 </div>
+<p>Then you must initialize each chest object with their respective parameters.</p>
 </section>
 <section id="flaskchestinfluxdb">
 <h2>FlaskChestInfluxDB<a class="headerlink" href="#flaskchestinfluxdb" title="Link to this heading">#</a></h2>
-<p>Then you must initialize each chest object with the necessary parameters. Our <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code> will write data points to an InfluxDB 2.x database running on <code class="docutils literal notranslate"><span class="pre">http://localhost:8086</span></code> with the provided authentication token. The data points are written to the <code class="docutils literal notranslate"><span class="pre">my-bucket</span></code> bucket in the <code class="docutils literal notranslate"><span class="pre">my-org</span></code> organization, and custom tags are added to each data point. We are also passing a global logging object, so that our logs are written to the same place as the rest of our Flask app,</p>
+<p>Our <code class="docutils literal notranslate"><span class="pre">FlaskChestInfluxDB</span></code> will:</p>
+<ul class="simple">
+<li><p>Write data points to an InfluxDB 2.x database running on <code class="docutils literal notranslate"><span class="pre">http://localhost:8086</span></code> to the <code class="docutils literal notranslate"><span class="pre">my-bucket</span></code> bucket in the <code class="docutils literal notranslate"><span class="pre">my-org</span></code> organization with the provided authentication token.</p></li>
+<li><p>Include custom tags with each data point.</p></li>
+<li><p>Log all messages using the provided logger instance.</p></li>
+</ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">chest_influxdb</span> <span class="o">=</span> <span class="n">FlaskChestInfluxDB</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;InfluxDB&quot;</span>
     <span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://localhost:8086&quot;</span><span class="p">,</span>
@@ -238,8 +246,8 @@
 </section>
 <section id="flaskchestcustomwriter">
 <h2>FlaskChestCustomWriter<a class="headerlink" href="#flaskchestcustomwriter" title="Link to this heading">#</a></h2>
-<p>Then we must initialize our <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> object, which will post data points to an endpoint listening on <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code>. To create an instance of <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code>, we must write a function that will return a data payload when passed the context tuple list.</p>
-<p>Here is a simple payload generator that returns a dictionary mapping the index of each 3-tuple in the list of 3-tuples, to the 3-tuple itself.</p>
+<p>Then we must initialize our <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> object, which will post data points to a SignalFX endpoint listening on <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code>. To create an instance of <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code>, we must write a function that will return a data payload when passed the <a class="reference internal" href="interfaces.html#payload-generator-function"><span class="std std-ref">context tuple list</span></a>.</p>
+<p>Here is a simple <b>payload generator</b> that returns a dictionary mapping the index of each 3-tuple in the list of 3-tuples, to the 3-tuple itself.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cust_payload_generator</span><span class="p">(</span><span class="n">context_tuple_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]):</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">context_tuple</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">context_tuple_list</span><span class="p">):</span>
@@ -247,8 +255,16 @@
     <span class="k">return</span> <span class="n">payload</span>
 </pre></div>
 </div>
-<p>We then initialize the <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> object, passing this function as the <code class="docutils literal notranslate"><span class="pre">payload_generator</span></code> parameter. This object logs all messages using the provided logger instance, does not verify the server’s TLS certificate, considers HTTP status codes <code class="docutils literal notranslate"><span class="pre">200</span></code> and <code class="docutils literal notranslate"><span class="pre">201</span></code> as success, does not send any headers or URL parameters with the POST request, does not use any proxies, uses our custom payload generator function, and posts data points to an endpoint listening on <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">chest_custom_writer</span> <span class="o">=</span> <span class="n">FlaskChestCustomWriter</span><span class="p">(</span>
+<p>Our <code class="docutils literal notranslate"><span class="pre">FlaskChestCustomWriter</span></code> will:</p>
+<ul class="simple">
+<li><p>Use the custom payload generator function to generate the payload for the POST request.</p></li>
+<li><p>Log all messages using the provided logger instance.</p></li>
+<li><p>Not verify the server’s TLS certificate.</p></li>
+<li><p>Consider HTTP status codes <code class="docutils literal notranslate"><span class="pre">200</span></code> and <code class="docutils literal notranslate"><span class="pre">201</span></code> as success.</p></li>
+<li><p>Not send any headers or URL parameters with the POST request.</p></li>
+<li><p>Not use any proxies.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">chest_signalfx</span> <span class="o">=</span> <span class="n">FlaskChestCustomWriter</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CustomWriter&quot;</span><span class="p">,</span>
     <span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://localhost:3000&quot;</span><span class="p">,</span>
     <span class="n">payload_generator</span><span class="o">=</span><span class="n">cust_payload_generator</span><span class="p">,</span>
@@ -262,49 +278,53 @@
 <section id="flask-chest-decorator">
 <h2><code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> Decorator<a class="headerlink" href="#flask-chest-decorator" title="Link to this heading">#</a></h2>
 <p>Now that the Flask Chest objects are initialized, we can apply our <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to our desired Flask route to start exporting. For this example app, lets use the following simple Flask index route,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api-endpoint&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@flask_chest</span><span class="p">(</span>
+    <span class="n">chests</span><span class="o">=</span><span class="p">[</span><span class="n">chest_influxdb</span><span class="p">,</span> <span class="n">chest_signalfx</span><span class="p">],</span>
+    <span class="n">tracked_vars</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;GET&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;transaction&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;POST&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;transaction&quot;</span><span class="p">,</span> <span class="s2">&quot;response_time&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+<span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
     <span class="n">g</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;123&quot;</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">transaction</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">response_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
         <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
-    <span class="n">g</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;321&quot;</span>
-    <span class="n">g</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">transaction</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">response_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
     <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator takes a dictionary mapping HTTP request methods to a list of global context variables that should be tracked during that request context. If we wanted to export the <code class="docutils literal notranslate"><span class="pre">g.total_time</span></code> for both <code class="docutils literal notranslate"><span class="pre">GET</span></code> and <code class="docutils literal notranslate"><span class="pre">POST</span></code> request methods, but only the <code class="docutils literal notranslate"><span class="pre">g.user_id</span></code> for <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests, we would define our tracked variables map as so,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">route_tracked_vars</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;GET&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;total_time&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;POST&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;total_time&quot;</span><span class="p">],</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Another optional parameter we can provide the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator is a <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code>. This function will get execute every time a request is made to the route. For this example, we will use the current date and time as formatted string to distinguish requests made to the route.</p>
+<p>Another optional parameter we can provide the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator is a <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code>. This function will execute every time a request is made to the route. For this example, we will use the current date and time as a formatted string to distinguish requests made to the route.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_request_id_generator</span><span class="p">():</span>
-    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>With our Flask Chest objects, our tracked variables dictionary, and our <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code> function initialized, we can now apply the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to our index route like so,</p>
+<p>With our <code class="docutils literal notranslate"><span class="pre">FlaskChest</span></code> objects, our tracked variables dictionary, and our <code class="docutils literal notranslate"><span class="pre">request_id_generator</span></code> function initialized, we can now apply the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator to our index route like so,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@flask_chest</span><span class="p">(</span>
-    <span class="n">chests</span><span class="o">=</span><span class="p">[</span><span class="n">chest_influxdb</span><span class="p">,</span> <span class="n">chest_custom_writer</span><span class="p">],</span>
-    <span class="n">tracked_vars</span><span class="o">=</span><span class="n">route_tracked_vars</span><span class="p">,</span>
+    <span class="n">chests</span><span class="o">=</span><span class="p">[</span><span class="n">chest_influxdb</span><span class="p">,</span> <span class="n">chest_signalfx</span><span class="p">],</span>
+    <span class="n">tracked_vars</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;GET&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;transaction&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;POST&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;transaction&quot;</span><span class="p">,</span> <span class="s2">&quot;response_time&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
     <span class="n">request_id_generator</span><span class="o">=</span><span class="n">custom_request_id_generator</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
     <span class="n">g</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;123&quot;</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">transaction</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">response_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
         <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
-    <span class="n">g</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;321&quot;</span>
-    <span class="n">g</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">transaction</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">response_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="n">start</span>
     <span class="k">return</span> <span class="s2">&quot;Hello, World!&quot;</span>
 </pre></div>
 </div>
+<p>With the <code class="docutils literal notranslate"><span class="pre">flask_chest</span></code> decorator applied to our route, the <code class="docutils literal notranslate"><span class="pre">Flask-Chest</span></code> package will automatically track and export the global context variables <code class="docutils literal notranslate"><span class="pre">g.transaction</span></code> and <code class="docutils literal notranslate"><span class="pre">g.response_time</span></code> to both the InfluxDB 2.x instance and the SignalFX endpoint every time the route is accessed.</p>
+<p>From both databases, you can now monitor and analyze the performance of your API in real-time, and use the data to make informed decisions about the performance of your API. For transaction data, you can perform a sum aggregation to get the total number of transactions made to the API, and for response time data, you can perform an average aggregation to get the average response time of POST requests to the API.</p>
 </section>
 </section>
 
@@ -364,6 +384,7 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Sample Usage</a><ul>
+<li><a class="reference internal" href="#example-exporting-slis-to-multiple-targets">Example: Exporting SLIs to Multiple Targets</a></li>
 <li><a class="reference internal" href="#imports">Imports</a></li>
 <li><a class="reference internal" href="#flaskchestinfluxdb">FlaskChestInfluxDB</a></li>
 <li><a class="reference internal" href="#flaskchestcustomwriter">FlaskChestCustomWriter</a></li>
