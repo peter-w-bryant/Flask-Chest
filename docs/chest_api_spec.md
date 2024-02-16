@@ -41,4 +41,5 @@ class SampleFlaskChest(FlaskChest):
 ### Logging
 Your `FlaskChest` object should log all messages using the provided `logger` instance, and should not print to the console. If no `logger` instance is provided, the `FlaskChest` object should not log any messages. All log messages should be include `SampleFlaskChest(name=<chest_name>)` in the log message, the preferred method for doing so is to use the `self.id` attribute.
 
+## Example Implementation
 For an example implementation, see the [`FlaskChestCustomWriter`](https://github.com/peter-w-bryant/Flask-Chest/blob/main/flask-chest/flask_chest/chests/custom.py) class.
