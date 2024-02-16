@@ -1,4 +1,7 @@
-# `FlaskChest` Object API Specification
+# `FlaskChest` API Specification
+To keep the project modular and extensible, the `FlaskChest` object API is defined in this document, and all `FlaskChest` objects must implement the following class interface.
+
+The API itself is very simple, where the only substantial method is the `write` method, which takes a [list of 3-tuples](interfaces.md#example-context-tuple-list) as an argument and writes a data point to the respective backend. Each 3-tuple is a global context variable of the form `(variable_name, variable_value, request_id)`. The order of the tuples in the list is the same as the order of the variables in the `tracked_vars` parameter of the [`flask_chest`](interfaces.md#flask-chest-decorator) decorator.
 
 ## Class Definition and Interface
 All `FlaskChest` objects must implement the following class interface:
@@ -25,11 +28,11 @@ class SampleFlaskChest(FlaskChest):
         """
         pass
 
-    def write(self, variables: List[Tuple[str, str, str]]) -> None:
+    def write(self, context_tuple_list: List[Tuple[str, str, str]]) -> None:
         """
         Write the context variables to the backend.
 
-        :param variables: A list of 3-tuples, each containing a global context variable of the form
+        :param context_tuple_list: A list of 3-tuples, each containing a global context variable of the form
                           `(variable_name, variable_value, request_id)`.
         """
         pass

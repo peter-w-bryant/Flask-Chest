@@ -34,7 +34,7 @@ From the Flask documentation by Pallets Projects:
 
 > The application context is a good place to store common data during a request or CLI command. Flask provides the `g` object for this purpose. It is a simple namespace object that has the same lifetime as an application context... The `g` name stands for “global”, but that is referring to the data being global within a context. The data on g is lost after the context ends, and it is not an appropriate place to store data between requests. Use the session or a database to store data across requests. [Source](https://flask.palletsprojects.com/en/2.0.x/appcontext/#storing-data)
 
-## Installation [![PyPI](https://img.shields.io/pypi/v/flask-chest)](https://pypi.org/project/flask-chest/)
+## Install [![PyPI](https://img.shields.io/pypi/v/flask-chest)](https://pypi.org/project/flask-chest/)
 
 ```bash
 pip install flask-chest
@@ -49,7 +49,7 @@ pip install flask-chest
 <center>
 <figure>
 <img src="_static/FlaskChestDataFlow.png" style="width:600px;"/>
-<figcaption>Fig 1: Multi-target data flow diagram showing how data is exported from the view function of a Flask route to multiple backends using the `Flask-Chest` package.</figcaption>
+<figcaption>Fig 1: Multi-target data flow diagram showing how data is exported from the view function of a Flask route to multiple backend targets using the `Flask-Chest` package.</figcaption>
 </figure>
 </center>
 

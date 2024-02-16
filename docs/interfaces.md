@@ -1,5 +1,5 @@
 ````{note}
-Last updated : 2024-2-15
+Last updated : 2024-2-16
 ````
 
 # APIs [![GitHub Issues](https://img.shields.io/github/issues/peter-w-bryant/Flask-Chest)](https://github.com/peter-w-bryant/Flask-Chest/issues)
@@ -29,7 +29,6 @@ The `FlaskChestCustomWriter` class provides an interface to write context data t
 | `success_status_codes` | `list[int]`  | `[200]`         | List of HTTP status codes that indicate a successful POST request. |
 | `logger`             | `object`        | `None`          | Logger instance for logging messages.                        |
 
-
 #### Payload Generator Function
 ```python
 def payload_generator(context_tuple_list: List[Tuple[str, str, str]]) -> dict|list|str|int|float|bool|None:
@@ -39,6 +38,17 @@ When using the `FlaskChestCustomWriter` class, a payload generator function must
 This function must implement the following interface:
 - It must take a list of 3-tuples as an argument. Each 3-tuple is a global context variable of the form `(variable_name, variable_value, request_id)`. The order of the tuples in the list is the same as the order of the variables in the `tracked_vars` parameter of the [`flask_chest`](#the-flask_chest-decorator) decorator.
 - It must return a [JSON serializable payload](https://learnpython.com/blog/object-serialization-in-python/) (e.g. `dict`, `list`, `str`, `int`, `float`, `bool`, and `None`).
+
+##### Example Context Tuple List
+Here is an example of a context tuple list that could be passed to the payload generator function, it contains the variable name, value, and request ID for each global context variable:
+```python
+context_tuple_list = [
+    ("transaction", "1", "11FNKMK4MV"),
+    ("post_req_time", "0.022345", "0FOA013M3"),
+    ("available", "0", "489JSNL11"),
+    ("error_code", "5", "INMKZO1P0"),
+]
+```
 
 ### FlaskChestInfluxDB
 The `FlaskChestInfluxDB` class provides an interface to write data points to instances of [InfluxDB 2.X](https://docs.influxdata.com/influxdb/v2/) using the [influxdb-client](https://github.com/influxdata/influxdb-client-python) library. [Example usage](sample_usage.md#flaskchestinfluxdb).
@@ -53,7 +63,6 @@ The `FlaskChestInfluxDB` class provides an interface to write data points to ins
 | `logger`                           | `object`      | `None`        | Logger instance for logging messages.                        |
 
 #### Specifying Custom Tags
-
 The `custom_tags` parameter is optional and can be used to add custom tags to each data point written to InfluxDB; each key-value pair in the dictionary should be of the form `{"tag_name": "tag_value"}`. [Example usage](sample_usage.md#flaskchestinfluxdb).
 
 ---
@@ -68,12 +77,10 @@ The `flask_chest` decorator is used to track and write specified context variabl
 | request_id_generator             | `func`        | `lambda: str(uuid.uuid4())`    | A function that generates a unique request ID.               |
 | raise_exceptions                 | `bool`        | `True`                         | Whether to raise exceptions if writing to a chest fails.     |
 
-
 The `chests` parameter is a list of `FlaskChest` objects that the decorator will write to. The `tracked_vars` parameter is a dictionary specifying which global context variables to write to the chests per request method. If this parameter is set to `None`, all variables in `g.variables` will be tracked and written to the chests.
 
 ### Request ID Generator
 The `request_id_generator` parameter is a function that should <u>return a unique identifier for each request as a string</u>. This ID is used to track and identify specific requests in the database, and can be used to trace the data back to the request that generated it. The default value for this parameter is a lambda function that returns a [UUID4](https://docs.python.org/3/library/uuid.html) string. [Example usage](sample_usage.md#flask-chest-decorator).
-
 
 ### Exception Handling
 The `raise_exceptions` parameter is a <u>boolean that determines whether exceptions should be raised if writing to a chest fails</u>. If set to `False`, exceptions will not be raised, and the decorator will continue to execute the view function even if writing to a chest fails. If set to `True`, exceptions will be raised if writing to a chest fails, and the view function will not be executed.

@@ -89,11 +89,10 @@ Now that the Flask Chest objects are initialized, we can apply our `flask_chest`
 )
 def index():
     g.start = time.time()
+    g.transaction = 1
     if request.method == "POST":
-        g.transaction = 1
         g.response_time = time.time() - g.start
         return "Hello, World!"
-    g.transaction = 1
     g.response_time = time.time() - g.start
     return "Hello, World!"
 ```
@@ -119,11 +118,10 @@ With our `FlaskChest` objects, our tracked variables dictionary, and our `reques
 )
 def index():
     g.start = time.time()
+    g.transaction = 1
     if request.method == "POST":
-        g.transaction = 1
         g.response_time = time.time() - g.start
         return "Hello, World!"
-    g.transaction = 1
     g.response_time = time.time() - g.start
     return "Hello, World!"
 ```
