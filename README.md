@@ -1,5 +1,5 @@
 # Flask-Chest
-Flask-Chest is a <b>Python package</b> adding support for the automated tracking and exporting of [global context variables](https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data) (`g.variables`) within the [request context](https://flask.palletsprojects.com/en/3.0.x/reqcontext/) of each client interaction.
+Flask-Chest is a <b>Python package</b> adding support for the automated tracking and exporting of [global context variables](https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data) (`g.variables`) within the [request context](https://flask.palletsprojects.com/en/3.0.x/reqcontext/) of each client interaction. It provides a simple interface for making metrics, query parameters, and other context data available to a variety of backend targets, including databases, and custom HTTP endpoints.
 
 <div align="center">
     <img src="images/flask_chest_README.png" alt="logo"/>
