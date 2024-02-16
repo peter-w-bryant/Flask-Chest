@@ -46,16 +46,9 @@ From the Flask documentation by Pallets Projects:
 ```bash
 pip install flask-chest
 ```
-## Usage Diagram
-<center>
-<figure>
-<img src="_static/flask_chest_simple_diagram.png" style="width:700px;"/>
-<figcaption>Fig 1: Multi-target data flow diagram showing how data is exported from the view function of a Flask route to multiple backends using the `Flask-Chest` package.</figcaption>
-</figure>
-</center>
 
 ## Contributing
-Pull requests are welcome. Please open an issue first to discuss what you would like to change. If you would like to extend the available `FlaskChest` object backend interfaces, please implement the `FlaskChest` object [API spec]() and run the available [test suite]() before opening a PR. See [CONTRIBUTING](https://peter-w-bryant.github.io/Flask-Chest/CONTRIBUTING.html) for more information.
+Pull requests are welcome. Please open an issue first to discuss what you would like to change. If you would like to extend the available `FlaskChest` object backend interfaces, please implement the `FlaskChest` object [API spec](chest_api_spec.md) and run the available [test suite]() before opening a PR. See [CONTRIBUTING](https://peter-w-bryant.github.io/Flask-Chest/CONTRIBUTING.html) for more information.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE) file for details.

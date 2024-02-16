@@ -1,5 +1,5 @@
 # Contributing
-Pull requests are welcome. Please open an issue first to discuss what you would like to change. If you would like to extend the available `FlaskChest` object backend interfaces, please implement the `FlaskChest` object [API spec](https://peter-w-bryant.github.io/Flask-Chest/chest_api_spec.html/) and run the available [test suite]() before opening a PR.
+Pull requests are welcome. Please open an issue first to discuss what you would like to change. If you would like to extend the available `FlaskChest` object backend interfaces, please implement the `FlaskChest` object [API spec](chest_api_spec.md) and run the available [test suite]() before opening a PR.
 
 ## How to Contribute
 1. Open an issue to discuss the changes you would like to make (tag `enhancement`, `docs`, `bug`, and `refactor` accordingly).

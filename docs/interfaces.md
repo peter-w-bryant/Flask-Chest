@@ -32,7 +32,7 @@ The `FlaskChestCustomWriter` class provides an interface to write context data t
 
 #### Payload Generator Function
 ```python
-def payload_generator(variables: List[Tuple[str, str, str]]) -> dict|list|str|int|float|bool|None:
+def payload_generator(context_tuple_list: List[Tuple[str, str, str]]) -> dict|list|str|int|float|bool|None:
 ```
 When using the `FlaskChestCustomWriter` class, a payload generator function must be provided, but <i>can be named anything</i>. This function is used to <b>generate the JSON body for the POST request</b> every time the `flask_chest` decorator is applied to a Flask route. [Example usage](https://peter-w-bryant.github.io/Flask-Chest/basic_app.html#flaskchestcustomwriter).
 

@@ -1,8 +1,10 @@
 # `FlaskChest` Object API Specification
-All `FlaskChest` objects must implement the following interface:
+
+## Class Definition and Interface
+All `FlaskChest` objects must implement the following class interface:
 
 ```python
-class YourFlaskChest(FlaskChest):
+class SampleFlaskChest(FlaskChest):
     def __init__(self, name: str, logger: object, **kwargs) -> None:
         """
         Initialize the `FlaskChest` object.
@@ -30,3 +32,8 @@ class YourFlaskChest(FlaskChest):
         """
         pass
 ```
+
+### Logging
+Your `FlaskChest` object should log all messages using the provided `logger` instance, and should not print to the console. If no `logger` instance is provided, the `FlaskChest` object should not log any messages. All log messages should be include `SampleFlaskChest(name=<chest_name>)` in the log message.
+
+For an example implementation, see the [`FlaskChestCustomWriter`](https://github.com/peter-w-bryant/Flask-Chest/blob/main/flask-chest/flask_chest/chests/custom.py) class.
