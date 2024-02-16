@@ -1,4 +1,4 @@
-# Basic Application
+# Sample Usage
 Below is an example of a basic Flask route that uses the `flask_chest` decorator to write to both an <u>InfluxDB 2.x instance</u> and an <u>API listening on `http://localhost:3000` for POST requests</u>.
 
 This example uses the following Flask Chest objects:
@@ -56,7 +56,7 @@ chest_custom_writer = FlaskChestCustomWriter(
 )
 ```
 
-## The `flask_chest` Decorator
+## `flask_chest` Decorator
 Now that the Flask Chest objects are initialized, we can apply our `flask_chest` decorator to our desired Flask route to start exporting. For this example app, lets use the following simple Flask index route,
 
 ```python

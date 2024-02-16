@@ -1,14 +1,19 @@
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 3
+:glob:
 :hidden:
 Overview<self>
 Install<install.md>
-Interfaces<interfaces.md>
-Basic Application<basic_app.md>
+APIs<interfaces.md>
+Sample Usage<sample_usage.md>
+Contributing<CONTRIBUTING.md>
 ```
 
-# Flask-Chest [![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label&color=black)](https://github.com/peter-w-bryant/Flask-Chest)
-Flask-Chest is a <b>Python package</b> adding support for the automated tracking and exporting of [global context variables](https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data) (`g.variables`) within the [request context](https://flask.palletsprojects.com/en/3.0.x/reqcontext/) of each client interaction.
+<!-- Import custom.css -->
+<link rel="stylesheet" type="text/css" href="_static/custom.css">
+
+# Flask-Chest [![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label&color=black)](https://github.com/peter-w-bryant/Flask-Chest) 
+Flask-Chest is a <b>Python package</b> adding support for the automated tracking and exporting of [global context variables](https://flask.palletsprojects.com/en/2.3.x/appcontext/#storing-data) (`g.variables`) within the [request context](https://flask.palletsprojects.com/en/3.0.x/reqcontext/) of each client interaction. It provides a simple interface for making metrics, query parameters, and other context data available to a variety of backend targets, including databases, and custom HTTP endpoints.
 
 <center>
 
@@ -31,9 +36,9 @@ From the Flask documentation by Pallets Projects:
 
 
 ## Features
-- Implements multiple `FlaskChest` objects, providing an <u>abstraction layer for different databases (and other backends)</u> using a simple/minimal interface.
-- Provides the `@flask_chest` decorator for view functions, <u>automatically exporting global context variables</u> to your configured data store.
-- Customizable request ID generation, enabling the <u>identification and aggregation of context data generated during the same request</u> context.
+- Implements multiple [`FlaskChest` objects](https://peter-w-bryant.github.io/Flask-Chest/interfaces.html#flask-chest-objects), providing an <u>abstraction layer for different databases</u> (and other backends) using a simple/minimal interface.
+- Provides the [`@flask_chest` decorator](https://peter-w-bryant.github.io/Flask-Chest/interfaces.html#flask-chest-decorator) for view functions, <u>automatically exporting global context variables</u> to your configured targets.
+- Customizable [request ID generation](https://peter-w-bryant.github.io/Flask-Chest/interfaces.html#request-id-generator), enabling the <u>identification and aggregation of context data generated during the same request</u> context.
 - Implements thread-safe data exporters, scheduled using [Flask-APScheduler](https://github.com/viniciuschiele/flask-apscheduler), to <u>cache context data and periodically export it</u>.
 
 ## Installation [![PyPI](https://img.shields.io/pypi/v/flask-chest)](https://pypi.org/project/flask-chest/)
@@ -42,10 +47,15 @@ From the Flask documentation by Pallets Projects:
 pip install flask-chest
 ```
 ## Usage Diagram
-![Flask-Chest Simple Diagram](/_static/flask_chest_simple_diagram.png)
+<center>
+<figure>
+<img src="_static/flask_chest_simple_diagram.png" style="width:700px;"/>
+<figcaption>Fig 1: Multi-target data flow diagram showing how data is exported from the view function of a Flask route to multiple backends using the `Flask-Chest` package.</figcaption>
+</figure>
+</center>
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. View the [CONTRIBUTING](https://github.com/peter-w-bryant/Flask-Chest/blob/main/CONTRIBUTING.md) file for more information.
+Pull requests are welcome. Please open an issue first to discuss what you would like to change. If you would like to extend the available `FlaskChest` object backend interfaces, please implement the `FlaskChest` object [API spec]() and run the available [test suite]() before opening a PR. See [CONTRIBUTING](https://peter-w-bryant.github.io/Flask-Chest/CONTRIBUTING.html) for more information.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/peter-w-bryant/Flask-Chest/blob/main/LICENSE) file for details.
